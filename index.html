@@ -121,9 +121,7 @@ const DEFAULT_PORTFOLIO_DATA = {
   ]
 };
 
-const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '5000'
-  ? 'http://localhost:5000'
-  : '';
+const API_BASE = '';
 
 const PortfolioContext = React.createContext();
 
@@ -386,7 +384,7 @@ const injectAdminStyles = () => {
 };
 
 /* ---------------- Admin Cpanel Component ---------------- */
-const AdminPanel = ({ onClose }) => {
+const AdminPanel = ({ onClose, showToast }) => {
   const { data, setData } = React.useContext(PortfolioContext);
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [username, setUsername] = React.useState("");
@@ -439,6 +437,7 @@ const AdminPanel = ({ onClose }) => {
       if (res.ok && data.success) {
         setIsLoggedIn(true);
         setLoginError("");
+        if (showToast) showToast("Admin authenticated!");
       } else {
         setLoginError(data.error || "Invalid Admin Credentials!");
       }
@@ -466,25 +465,25 @@ const AdminPanel = ({ onClose }) => {
   const handleSaveGeneral = (e) => {
     e.preventDefault();
     saveConfig({ ...data, hero: heroForm, about: aboutForm, contact: contactForm });
-    alert("General settings saved!");
+    if (showToast) showToast("General & Hero settings saved!");
   };
 
   const handleSaveSkills = (e) => {
     e.preventDefault();
     saveConfig({ ...data, skills: skillsList });
-    alert("Skills settings saved!");
+    if (showToast) showToast("Skills configuration saved!");
   };
 
   const handleSaveProjects = (e) => {
     e.preventDefault();
     saveConfig({ ...data, projects: projectsList });
-    alert("Projects settings saved!");
+    if (showToast) showToast("Projects portfolio saved!");
   };
 
   const handleSaveCerts = (e) => {
     e.preventDefault();
     saveConfig({ ...data, certificates: certsList });
-    alert("Certificates settings saved!");
+    if (showToast) showToast("Certifications updated!");
   };
 
   const handleImageUpload = (e) => {
@@ -826,17 +825,36 @@ const AdminPanel = ({ onClose }) => {
                         <div>{lead.date}</div>
                       </div>
                       <div style={{ fontSize: "13px", fontWeight: "600", marginBottom: "4px" }}>Subject: {lead.subject}</div>
-                      <div style={{ fontSize: "13px", color: "#f1f3f9", background: "rgba(255,255,255,0.02)", padding: "10px", borderRadius: "6px", marginBottom: "6px" }}>{lead.message}</div>
-                      <button className="cpanel-action-btn danger" style={{ fontSize: "11.5px", color: "#ef4444" }} onClick={async ()=>{
-                        try {
-                          const res = await fetch(`${API_BASE}/api/leads/${lead.id}`, { method: "DELETE" });
-                          if (res.ok) {
-                            setLeadsList(leadsList.filter(l=>l.id !== lead.id));
+                      <div style={{ fontSize: "13px", color: "#f1f3f9", background: "rgba(255,255,255,0.02)", padding: "10px", borderRadius: "6px", marginBottom: "8px" }}>{lead.message}</div>
+                      <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                        <a 
+                          href={`mailto:${lead.email}?subject=Re: ${encodeURIComponent(lead.subject || "Your Inquiry")}`}
+                          className="cpanel-btn cpanel-btn-outline" 
+                          style={{ padding: "4px 10px", fontSize: "11px", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "4px" }}
+                        >
+                          ✉️ Email Reply
+                        </a>
+                        <a 
+                          href={`https://wa.me/?text=${encodeURIComponent(`Hi ${lead.name}, thanks for contacting me regarding "${lead.subject || "your inquiry"}"!`)}`}
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="cpanel-btn cpanel-btn-primary" 
+                          style={{ padding: "4px 10px", fontSize: "11px", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "4px" }}
+                        >
+                          💬 WhatsApp
+                        </a>
+                        <button className="cpanel-action-btn danger" style={{ fontSize: "11.5px", color: "#ef4444", marginLeft: "auto" }} onClick={async ()=>{
+                          try {
+                            const res = await fetch(`${API_BASE}/api/leads/${lead.id}`, { method: "DELETE" });
+                            if (res.ok) {
+                              setLeadsList(leadsList.filter(l=>l.id !== lead.id));
+                              if (showToast) showToast("Lead message removed.");
+                            }
+                          } catch(err) {
+                            console.error("Error deleting lead:", err);
                           }
-                        } catch(err) {
-                          console.error("Error deleting lead:", err);
-                        }
-                      }}>✕ Delete Message</button>
+                        }}>✕ Delete</button>
+                      </div>
                     </div>
                   ))
                 )}
@@ -1497,7 +1515,69 @@ const ChaiMock = () => (
   </div>
 );
 
-const ProjectCard = ({ p, i, activeIdx, onClick, cardW }) => {
+/* ---------------- Interactive Ambient Glow Cursor ---------------- */
+const CustomCursor = () => {
+  const [pos, setPos] = useState({ x: -100, y: -100 });
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    const onMouseMove = (e) => {
+      setPos({ x: e.clientX, y: e.clientY });
+      const target = e.target;
+      const isInteractive = target && target.closest && target.closest('a, button, input, textarea, .project-card, .skill-card, .cert-card, .project-filter-pill, .cpanel-sidebar-item');
+      setIsHovered(!!isInteractive);
+    };
+    window.addEventListener('mousemove', onMouseMove);
+    return () => window.removeEventListener('mousemove', onMouseMove);
+  }, []);
+
+  useEffect(() => {
+    if (isHovered) {
+      document.body.classList.add('custom-cursor-hover');
+    } else {
+      document.body.classList.remove('custom-cursor-hover');
+    }
+  }, [isHovered]);
+
+  return (
+    <>
+      <div className="custom-cursor-dot" style={{ left: `${pos.x}px`, top: `${pos.y}px` }} />
+      <div className="custom-cursor-ring" style={{ left: `${pos.x}px`, top: `${pos.y}px` }} />
+    </>
+  );
+};
+
+/* ---------------- Project Details Modal ---------------- */
+const ProjectModal = ({ project, onClose }) => {
+  if (!project) return null;
+  return (
+    <div className="project-modal-backdrop" onClick={onClose}>
+      <div className="project-modal-card" onClick={(e) => e.stopPropagation()}>
+        <button className="project-modal-close" onClick={onClose}>✕</button>
+        <span className="project-modal-tag">{project.category || "Featured Work"}</span>
+        <h2 className="project-modal-title">{project.title}</h2>
+        <div className="project-modal-tech">
+          {(project.tech || "").split(",").map((t, idx) => (
+            <span key={idx} className="project-modal-tech-pill">{t.trim()}</span>
+          ))}
+        </div>
+        <p className="project-modal-desc">
+          {project.desc || `A high-performance ${project.category || 'web'} project built using ${project.tech || 'modern technologies'}. Designed with sleek glassmorphism aesthetic, seamless interactive state management, and optimized response times.`}
+        </p>
+        <div className="project-modal-ctas">
+          <a href={project.liveUrl || "#"} target="_blank" rel="noopener noreferrer" className="btn btn-primary" onClick={(e) => { if (!project.liveUrl || project.liveUrl === "#") e.preventDefault(); }}>
+            <Icon name="external" size={15} /> Live Preview
+          </a>
+          <a href={project.githubUrl || "#"} target="_blank" rel="noopener noreferrer" className="btn btn-outline" onClick={(e) => { if (!project.githubUrl || project.githubUrl === "#") e.preventDefault(); }}>
+            <Icon name="github" size={15} /> Source Code
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const ProjectCard = ({ p, i, activeIdx, onClick, cardW, onOpenModal }) => {
   const diff = i - activeIdx;
   const isCenter = diff === 0;
   return (
@@ -1506,11 +1586,17 @@ const ProjectCard = ({ p, i, activeIdx, onClick, cardW }) => {
       style={{
         transform: `scale(${isCenter ? 1 : 0.94})`,
         opacity: isCenter ? 1 : 0.45,
-        cursor: isCenter ? "default" : "pointer",
+        cursor: "pointer",
         width: `${cardW}px`,
         flex: `0 0 ${cardW}px`
       }}
-      onClick={!isCenter ? onClick : undefined}
+      onClick={() => {
+        if (!isCenter) {
+          onClick();
+        } else {
+          onOpenModal(p);
+        }
+      }}
     >
       <div className="project-card-header">
         <div className="project-card-num">{p.num}</div>
@@ -1541,6 +1627,13 @@ const ProjectCard = ({ p, i, activeIdx, onClick, cardW }) => {
           <div className="tech-label">Technologies</div>
           <div className="tech-list">{p.tech}</div>
         </div>
+        {isCenter && (
+          <div style={{ marginTop: "12px", display: "flex", justifyContent: "flex-end" }}>
+            <span style={{ fontSize: "12px", color: "var(--accent-2)", fontWeight: "600", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+              View Details <Icon name="arrow" size={13} />
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -1549,6 +1642,15 @@ const ProjectCard = ({ p, i, activeIdx, onClick, cardW }) => {
 const Projects = () => {
   const { data } = useContext(PortfolioContext);
   const projectsList = data.projects || [];
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [selectedProjectModal, setSelectedProjectModal] = useState(null);
+
+  const categories = ["All", ...Array.from(new Set(projectsList.map(p => p.category).filter(Boolean)))];
+  
+  const filteredProjects = activeCategory === "All" 
+    ? projectsList 
+    : projectsList.filter(p => p.category === activeCategory);
+
   const [activeIdx, setActiveIdx] = useState(0);
   const [containerWidth, setContainerWidth] = useState(1180);
   const [dragStart, setDragStart] = useState(null);
@@ -1562,8 +1664,9 @@ const Projects = () => {
 
   useEffect(() => { isDraggingRef.current = isDragging; }, [isDragging]);
   useEffect(() => { isHoveredRef.current = isHovered; }, [isHovered]);
+  useEffect(() => { setActiveIdx(0); }, [activeCategory]);
 
-  const total = projectsList.length;
+  const total = filteredProjects.length;
   const gap = 24;
 
   const getCardWidth = () => {
@@ -1621,6 +1724,19 @@ const Projects = () => {
           <h2>I make Incredible <span className="grad-text">Projects</span></h2>
         </div>
 
+        {/* Category Filter Pills */}
+        <div className="project-filter-pills">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              className={`project-filter-pill ${activeCategory === cat ? "active" : ""}`}
+              onClick={() => setActiveCategory(cat)}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
         <div 
           className="projects-slider-wrapper" 
           ref={wrapperRef}
@@ -1640,7 +1756,7 @@ const Projects = () => {
             className={`projects-slider-track ${isDragging ? "dragging" : ""}`}
             style={{ transform: `translateX(${trackOffset}px)` }}
           >
-            {projectsList.map((p, i) => (
+            {filteredProjects.map((p, i) => (
               <ProjectCard 
                 key={i} 
                 p={p} 
@@ -1648,6 +1764,7 @@ const Projects = () => {
                 activeIdx={activeIdx}
                 cardW={cardW}
                 onClick={() => setActiveIdx(i)}
+                onOpenModal={setSelectedProjectModal}
               />
             ))}
           </div>
@@ -1659,7 +1776,7 @@ const Projects = () => {
               <Icon name="arrow" size={18} />
             </button>
             <div className="slider-pagination">
-              {projectsList.map((_, i) => (
+              {filteredProjects.map((_, i) => (
                 <div key={i} className={`slider-dot ${i === activeIdx ? "active" : ""}`} onClick={() => setActiveIdx(i)} />
               ))}
             </div>
@@ -1669,6 +1786,11 @@ const Projects = () => {
           </div>
         )}
       </div>
+
+      <ProjectModal 
+        project={selectedProjectModal} 
+        onClose={() => setSelectedProjectModal(null)} 
+      />
     </section>
   );
 };
@@ -1762,6 +1884,29 @@ function App() {
       }
     };
     fetchPortfolioData();
+
+    // Real-Time Live Sync EventSource Listener
+    let eventSource;
+    try {
+      eventSource = new EventSource('/api/events');
+      eventSource.onmessage = (e) => {
+        try {
+          const payload = JSON.parse(e.data);
+          if (payload.type === 'PORTFOLIO_UPDATED' && payload.data) {
+            setPortfolioData(payload.data);
+            showToast("⚡ Portfolio updated live!");
+          }
+        } catch(err) {
+          console.error("SSE Message parse error:", err);
+        }
+      };
+    } catch(err) {
+      console.error("EventSource error:", err);
+    }
+
+    return () => {
+      if (eventSource) eventSource.close();
+    };
   }, []);
 
   useEffect(() => {
@@ -1791,6 +1936,7 @@ function App() {
 
   return (
     <PortfolioContext.Provider value={{ data: portfolioData, setData: setPortfolioData, isAdminOpen, setIsAdminOpen }}>
+      <CustomCursor />
       <Nav theme={theme} toggleTheme={toggleTheme} active={active} />
       <Hero theme={theme} />
       <About />
@@ -1799,15 +1945,12 @@ function App() {
       <Projects />
       <Contact showToast={showToast} />
       <footer>
-        © 2026 {portfolioData.about.name}. All rights reserved. |{" "}
-        <a href="#admin" onClick={(e) => { e.preventDefault(); setIsAdminOpen(true); }} style={{ color: "var(--accent-2)", cursor: "pointer", fontWeight: "600", marginLeft: "6px" }}>
-          Admin Panel
-        </a>
+        © 2026 {portfolioData.about.name}. All rights reserved.
       </footer>
       <div className={`toast ${toast.show ? "show" : ""}`}>
         <Icon name="dot" size={10} /> {toast.msg}
       </div>
-      {isAdminOpen && <AdminPanel onClose={() => setIsAdminOpen(false)} />}
+      {isAdminOpen && <AdminPanel onClose={() => setIsAdminOpen(false)} showToast={showToast} />}
     </PortfolioContext.Provider>
   );
 }

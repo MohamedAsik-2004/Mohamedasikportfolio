@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Portal — Portfolio C-Panel</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    :root {
+      color-scheme: dark;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #060813;
+      color: #f1f3f9;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    #admin-root {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .admin-page-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background: 
+        radial-gradient(circle at 15% 15%, rgba(124, 92, 255, 0.15) 0%, transparent 45%),
+        radial-gradient(circle at 85% 75%, rgba(56, 189, 248, 0.12) 0%, transparent 50%),
+        #060813;
+    }
+    .admin-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(53, 214, 138, 0.12);
+      color: #35d68a;
+      border: 1px solid rgba(53, 214, 138, 0.3);
+    }
+    .admin-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #35d68a;
+      box-shadow: 0 0 8px #35d68a;
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-page-bg"></div>
+  <div id="admin-root"></div>
+
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js" crossorigin></script>
+
+  <script type="text/plain" id="admin-source">
+const API_BASE = '';
+
+const DEFAULT_DATA = {
+  hero: { firstName: "Mohamed Asik", lastName: "K", role: "Flutter Developer", bio: "I craft stunning digital experiences that merge elegant design with powerful functionality. Let's build something extraordinary together.", resumeUrl: "#", avatarUrl: "", socials: { github: "#", linkedin: "#", instagram: "#", twitter: "#" } },
+  about: { name: "MOHAMED ASIK K", location: "Chennai, Tamil Nadu, India", email: "mohamedasik.in@gmail.com", experience: "Fresher", headline: "Building things that are both beautiful and blazing fast.", bio: "I craft stunning digital experiences that merge elegant design with powerful functionality. Let's build something extraordinary together.", resumeUrl: "#", avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=600&h=800&q=80" },
+  contact: { email: "mohamedasik.in@gmail.com", phone: "+91 63825 55230", location: "India, Earth", whatsappUrl: "https://wa.me/916382555230?text=Hi%20Mohamed%20Asik%2C%20I%27d%20like%20to%20get%20in%20touch!" },
+  skills: { frontend: [], backend: [] },
+  certificates: [],
+  projects: []
+};
+
+const AdminApp = () => {
+  const [data, setData] = React.useState(DEFAULT_DATA);
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  const [username, setUsername] = React.useState("admin");
+  const [password, setPassword] = React.useState("");
+  const [loginError, setLoginError] = React.useState("");
+  const [activeTab, setActiveTab] = React.useState("overview");
+  const [toast, setToast] = React.useState({ show: false, msg: "" });
+
+  const [heroForm, setHeroForm] = React.useState({ ...DEFAULT_DATA.hero });
+  const [aboutForm, setAboutForm] = React.useState({ ...DEFAULT_DATA.about });
+  const [contactForm, setContactForm] = React.useState({ ...DEFAULT_DATA.contact });
+  const [skillsList, setSkillsList] = React.useState({ frontend: [], backend: [] });
+  const [certsList, setCertsList] = React.useState([]);
+  const [projectsList, setProjectsList] = React.useState([]);
+  const [leadsList, setLeadsList] = React.useState([]);
+
+  const showToast = (msg) => {
+    setToast({ show: true, msg });
+    setTimeout(() => setToast({ show: false, msg: "" }), 3200);
+  };
+
+  const fetchPortfolioData = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/api/portfolio-data`);
+      if (res.ok) {
+        const fetchedData = await res.json();
+        setData(fetchedData);
+        if (fetchedData.hero) setHeroForm({ ...fetchedData.hero });
+        if (fetchedData.about) setAboutForm({ ...fetchedData.about });
+        if (fetchedData.contact) setContactForm({ ...fetchedData.contact });
+        if (fetchedData.skills) setSkillsList(JSON.parse(JSON.stringify(fetchedData.skills)));
+        if (fetchedData.certificates) setCertsList(JSON.parse(JSON.stringify(fetchedData.certificates)));
+        if (fetchedData.projects) setProjectsList(JSON.parse(JSON.stringify(fetchedData.projects)));
+      }
+    } catch(err) {
+      console.error("Error loading portfolio data:", err);
+    }
+  };
+
+  const fetchLeads = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/api/leads`);
+      if (res.ok) {
+        const list = await res.json();
+        setLeadsList(list);
+      }
+    } catch(err) {
+      console.error("Error fetching leads:", err);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchPortfolioData();
+
+    let eventSource;
+    try {
+      eventSource = new EventSource('/api/events');
+      eventSource.onmessage = (e) => {
+        try {
+          const payload = JSON.parse(e.data);
+          if (payload.type === 'PORTFOLIO_UPDATED' && payload.data) {
+            setData(payload.data);
+          }
+        } catch(err) {
+          console.error("SSE parse error:", err);
+        }
+      };
+    } catch(err) {
+      console.error(err);
+    }
+
+    return () => {
+      if (eventSource) eventSource.close();
+    };
+  }, []);
+
+  React.useEffect(() => {
+    if (isLoggedIn) {
+      fetchLeads();
+    }
+  }, [isLoggedIn]);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoginError("");
+    try {
+      const res = await fetch(`${API_BASE}/api/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+      const resData = await res.json();
+      if (res.ok && resData.success) {
+        setIsLoggedIn(true);
+        showToast("Access Granted. Welcome to your Admin C-Panel!");
+      } else {
+        setLoginError(resData.error || "Invalid Username or Password.");
+      }
+    } catch(err) {
+      setLoginError("Login query failed: " + err.message);
+    }
+  };
+
+  const saveConfig = async (updatedData) => {
+    setData(updatedData);
+    try {
+      const res = await fetch(`${API_BASE}/api/portfolio-data`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data: updatedData })
+      });
+      if (!res.ok) console.error("Failed to save data.");
+    } catch(err) {
+      console.error("Error saving data:", err);
+    }
+  };
+
+  const handleSaveGeneral = (e) => {
+    e.preventDefault();
+    saveConfig({ ...data, hero: heroForm, about: aboutForm, contact: contactForm });
+    showToast("✓ Hero & About settings updated!");
+  };
+
+  const handleSaveSkills = (e) => {
+    e.preventDefault();
+    saveConfig({ ...data, skills: skillsList });
+    showToast("✓ Skills portfolio saved successfully!");
+  };
+
+  const handleSaveProjects = (e) => {
+    e.preventDefault();
+    saveConfig({ ...data, projects: projectsList });
+    showToast("✓ Projects list updated!");
+  };
+
+  const handleSaveCerts = (e) => {
+    e.preventDefault();
+    saveConfig({ ...data, certificates: certsList });
+    showToast("✓ Certifications list saved!");
+  };
+
+  const handleSkillChange = (cat, idx, key, val) => {
+    const next = { ...skillsList };
+    next[cat][idx][key] = val;
+    setSkillsList(next);
+  };
+
+  const handleAddSkill = (cat) => {
+    const next = { ...skillsList };
+    if (!next[cat]) next[cat] = [];
+    next[cat].push({ name: "New Skill", sub: "Category", pct: 85, glyph: "⚡", bg: "#0b2a3a", fg: "#61dafb" });
+    setSkillsList(next);
+  };
+
+  const handleProjChange = (idx, key, val) => {
+    const next = [...projectsList];
+    next[idx][key] = val;
+    setProjectsList(next);
+  };
+
+  const handleCertChange = (idx, key, val) => {
+    const next = [...certsList];
+    next[idx][key] = val;
+    setCertsList(next);
+  };
+
+  const handleHeroImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => setHeroForm({ ...heroForm, avatarUrl: reader.result });
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleResumeUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => setHeroForm({ ...heroForm, resumeUrl: reader.result });
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleProjImageUpload = (idx, e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => handleProjChange(idx, "imageUrl", reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  if (!isLoggedIn) {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center", padding: "20px" }}>
+        <form className="cpanel-login-box" onSubmit={handleLogin} style={{ width: "100%", maxWidth: "380px" }}>
+          <div style={{ textTransform: "center", margin: "0 auto 4px auto" }}>
+            <div className="admin-badge">
+              <span className="admin-badge-dot"></span> SECURE ADMIN PORTAL
+            </div>
+          </div>
+          <div className="cpanel-login-title">Admin <span>C-Panel</span></div>
+          <p style={{ color: "#9aa3b8", fontSize: "13px", textAlign: "center", margin: "-6px 0 10px 0", lineHeight: "1.5" }}>
+            Enter your credentials to manage live portfolio data, skills, projects, and leads.
+          </p>
+          {loginError && <div className="cpanel-login-error">⚠️ {loginError}</div>}
+          <div className="cpanel-input-group">
+            <label>Username</label>
+            <input required type="text" className="cpanel-input" value={username} onChange={e=>setUsername(e.target.value)} />
+          </div>
+          <div className="cpanel-input-group">
+            <label>Password</label>
+            <input required type="password" className="cpanel-input" value={password} onChange={e=>setPassword(e.target.value)} placeholder="••••••••" />
+          </div>
+          <button type="submit" className="cpanel-btn cpanel-btn-primary" style={{ justifyContent: "center", marginTop: "10px", width: "100%" }}>
+            Access Dashboard →
+          </button>
+          <div style={{ display: "flex", justifyContent: "center", marginTop: "6px" }}>
+            <a href="/" style={{ color: "#9aa3b8", fontSize: "12.5px", textDecoration: "none", transition: "color 0.2s" }} onMouseOver={e=>e.target.style.color="#7c5cff"} onMouseOut={e=>e.target.style.color="#9aa3b8"}>
+              ← Back to Live Portfolio
+            </a>
+          </div>
+        </form>
+      </div>
+    );
+  }
+
+  const totalSkills = (skillsList.frontend || []).length + (skillsList.backend || []).length;
+
+  return (
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      {/* Top Bar */}
+      <div className="cpanel-header">
+        <div className="cpanel-header-title">
+          <span>⚡ Admin</span> C-Panel
+          <div className="admin-badge" style={{ marginLeft: "12px" }}>
+            <span className="admin-badge-dot"></span> LIVE SYSTEM
+          </div>
+        </div>
+        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+          <a href="/" target="_blank" rel="noopener noreferrer" className="cpanel-btn cpanel-btn-outline">
+            🌐 Live Website ↗
+          </a>
+          <button className="cpanel-close-btn" onClick={() => setIsLoggedIn(false)}>
+            🚪 Logout
+          </button>
+        </div>
+      </div>
+      
+      {/* Main Layout */}
+      <div className="cpanel-body">
+        {/* Sidebar */}
+        <div className="cpanel-sidebar">
+          <button className={`cpanel-sidebar-item ${activeTab==="overview"?"active":""}`} onClick={()=>setActiveTab("overview")}>
+            <span>📊 Overview</span>
+          </button>
+          <button className={`cpanel-sidebar-item ${activeTab==="hero"?"active":""}`} onClick={()=>setActiveTab("hero")}>
+            <span>👤 Hero & About</span>
+          </button>
+          <button className={`cpanel-sidebar-item ${activeTab==="skills"?"active":""}`} onClick={()=>setActiveTab("skills")}>
+            <span>⚡ Skills</span>
+            <span style={{ fontSize: "11px", background: "rgba(255,255,255,0.1)", padding: "2px 6px", borderRadius: "10px" }}>{totalSkills}</span>
+          </button>
+          <button className={`cpanel-sidebar-item ${activeTab==="projects"?"active":""}`} onClick={()=>setActiveTab("projects")}>
+            <span>📂 Projects</span>
+            <span style={{ fontSize: "11px", background: "rgba(255,255,255,0.1)", padding: "2px 6px", borderRadius: "10px" }}>{projectsList.length}</span>
+          </button>
+          <button className={`cpanel-sidebar-item ${activeTab==="certs"?"active":""}`} onClick={()=>setActiveTab("certs")}>
+            <span>🥇 Certificates</span>
+            <span style={{ fontSize: "11px", background: "rgba(255,255,255,0.1)", padding: "2px 6px", borderRadius: "10px" }}>{certsList.length}</span>
+          </button>
+          <button className={`cpanel-sidebar-item ${activeTab==="leads"?"active":""}`} onClick={()=>setActiveTab("leads")}>
+            <span>📥 Lead Inbox</span>
+            <span style={{ fontSize: "11px", background: leadsList.length > 0 ? "#7c5cff" : "rgba(255,255,255,0.1)", padding: "2px 6px", borderRadius: "10px", color: "white" }}>{leadsList.length}</span>
+          </button>
+        </div>
+        
+        {/* Main Content Area */}
+        <div className="cpanel-content">
+          {/* TAB 1: OVERVIEW */}
+          {activeTab === "overview" && (
+            <div>
+              <div className="cpanel-card">
+                <div className="cpanel-card-title">
+                  <div>System Dashboard</div>
+                  <span style={{ fontSize: "12px", color: "#35d68a", fontWeight: "normal" }}>● SQLite Connected</span>
+                </div>
+                <p style={{ color: "#9aa3b8", lineHeight: "1.6", margin: "0 0 24px 0", fontSize: "14px" }}>
+                  Manage and customize your entire portfolio dataset. Any updates saved here are instantly written to your server database and presented live to visitors.
+                </p>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "18px" }}>
+                  <div style={{ background: "linear-gradient(135deg, rgba(124, 92, 255, 0.12), rgba(124, 92, 255, 0.03))", padding: "24px", borderRadius: "16px", border: "1px solid rgba(124, 92, 255, 0.2)" }}>
+                    <div style={{ fontSize: "12px", color: "#9aa3b8", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "600" }}>Total Skills</div>
+                    <div style={{ fontSize: "36px", fontWeight: "800", color: "#7c5cff", marginTop: "6px" }}>{totalSkills}</div>
+                    <div style={{ fontSize: "12px", color: "#9aa3b8", marginTop: "4px" }}>Frontend & Backend Stack</div>
+                  </div>
+
+                  <div style={{ background: "linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(56, 189, 248, 0.03))", padding: "24px", borderRadius: "16px", border: "1px solid rgba(56, 189, 248, 0.2)" }}>
+                    <div style={{ fontSize: "12px", color: "#9aa3b8", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "600" }}>Featured Projects</div>
+                    <div style={{ fontSize: "36px", fontWeight: "800", color: "#38bdf8", marginTop: "6px" }}>{projectsList.length}</div>
+                    <div style={{ fontSize: "12px", color: "#9aa3b8", marginTop: "4px" }}>Portfolio Showcase Items</div>
+                  </div>
+
+                  <div style={{ background: "linear-gradient(135deg, rgba(53, 214, 138, 0.12), rgba(53, 214, 138, 0.03))", padding: "24px", borderRadius: "16px", border: "1px solid rgba(53, 214, 138, 0.2)" }}>
+                    <div style={{ fontSize: "12px", color: "#9aa3b8", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "600" }}>Leads Received</div>
+                    <div style={{ fontSize: "36px", fontWeight: "800", color: "#35d68a", marginTop: "6px" }}>{leadsList.length}</div>
+                    <div style={{ fontSize: "12px", color: "#9aa3b8", marginTop: "4px" }}>Active Messages in Inbox</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="cpanel-card">
+                <div className="cpanel-card-title">Quick Actions</div>
+                <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+                  <button className="cpanel-btn cpanel-btn-primary" onClick={()=>setActiveTab("projects")}>+ Add New Project</button>
+                  <button className="cpanel-btn cpanel-btn-outline" onClick={()=>setActiveTab("skills")}>+ Manage Skills</button>
+                  <button className="cpanel-btn cpanel-btn-outline" onClick={()=>setActiveTab("leads")}>📥 View Leads ({leadsList.length})</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 2: HERO & ABOUT */}
+          {activeTab === "hero" && (
+            <form onSubmit={handleSaveGeneral}>
+              <div className="cpanel-card">
+                <div className="cpanel-card-title">Hero Section Config</div>
+                <div className="cpanel-form-grid">
+                  <div className="cpanel-input-group"><label>First Name</label><input className="cpanel-input" value={heroForm.firstName} onChange={e=>setHeroForm({...heroForm, firstName:e.target.value})}/></div>
+                  <div className="cpanel-input-group"><label>Last Name</label><input className="cpanel-input" value={heroForm.lastName} onChange={e=>setHeroForm({...heroForm, lastName:e.target.value})}/></div>
+                  <div className="cpanel-input-group cpanel-form-full"><label>Role Title</label><input className="cpanel-input" value={heroForm.role} onChange={e=>setHeroForm({...heroForm, role:e.target.value})}/></div>
+                  <div className="cpanel-input-group cpanel-form-full"><label>Biography</label><textarea className="cpanel-input cpanel-textarea" value={heroForm.bio} onChange={e=>setHeroForm({...heroForm, bio:e.target.value})}/></div>
+                  
+                  <div className="cpanel-input-group cpanel-form-full">
+                    <label>Resume File (PDF/Doc)</label>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      {heroForm.resumeUrl && heroForm.resumeUrl.startsWith("data:") && <span style={{fontSize: "12px", color: "#35d68a", fontWeight: "600"}}>✓ Resume Loaded</span>}
+                      <input type="file" accept=".pdf,.doc,.docx" className="cpanel-input" onChange={handleResumeUpload} style={{ flex: 1 }} />
+                    </div>
+                  </div>
+
+                  <div className="cpanel-input-group cpanel-form-full">
+                    <label>Avatar / Profile Image</label>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                      <img src={heroForm.avatarUrl || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=100&h=100"} alt="Preview" style={{ width: '48px', height: '48px', borderRadius: '10px', objectFit: 'cover', border: "1px solid rgba(255,255,255,0.2)" }} />
+                      <input type="file" accept="image/*" className="cpanel-input" onChange={handleHeroImageUpload} style={{ flex: 1 }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="cpanel-card">
+                <div className="cpanel-card-title">Contact Info Config</div>
+                <div className="cpanel-form-grid">
+                  <div className="cpanel-input-group"><label>Email Address</label><input className="cpanel-input" value={contactForm.email} onChange={e=>setContactForm({...contactForm, email:e.target.value})}/></div>
+                  <div className="cpanel-input-group"><label>Phone Number</label><input className="cpanel-input" value={contactForm.phone} onChange={e=>setContactForm({...contactForm, phone:e.target.value})}/></div>
+                  <div className="cpanel-input-group cpanel-form-full"><label>WhatsApp Chat URL</label><input className="cpanel-input" value={contactForm.whatsappUrl} onChange={e=>setContactForm({...contactForm, whatsappUrl:e.target.value})}/></div>
+                </div>
+              </div>
+
+              <button type="submit" className="cpanel-btn cpanel-btn-primary">Save Hero & Contact Settings</button>
+            </form>
+          )}
+
+          {/* TAB 3: SKILLS */}
+          {activeTab === "skills" && (
+            <div className="cpanel-card">
+              <div className="cpanel-card-title">Manage Technical Skills</div>
+              {["frontend", "backend"].map((cat) => (
+                <div key={cat} style={{ marginBottom: "28px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                    <h4 style={{ textTransform: "capitalize", color: "#7c5cff", margin: 0, fontSize: "16px" }}>{cat} Skills Stack</h4>
+                    <button className="cpanel-btn cpanel-btn-outline" style={{ padding: "6px 12px", fontSize: "12px" }} onClick={() => handleAddSkill(cat)}>+ Add Skill</button>
+                  </div>
+                  {(skillsList[cat] || []).map((sk, idx) => (
+                    <div key={idx} style={{ display: "flex", gap: "10px", alignItems: "center", marginBottom: "10px", background: "rgba(255,255,255,0.02)", padding: "10px", borderRadius: "10px", border: "1px solid rgba(255,255,255,0.05)" }}>
+                      <input className="cpanel-input" style={{ width: "160px" }} value={sk.name} onChange={e=>handleSkillChange(cat, idx, "name", e.target.value)} placeholder="Skill Name"/>
+                      <input className="cpanel-input" style={{ width: "120px" }} value={sk.sub} onChange={e=>handleSkillChange(cat, idx, "sub", e.target.value)} placeholder="Category"/>
+                      <input type="number" className="cpanel-input" style={{ width: "80px" }} value={sk.pct} onChange={e=>handleSkillChange(cat, idx, "pct", parseInt(e.target.value)||0)} placeholder="%"/>
+                      <input className="cpanel-input" style={{ width: "60px", textAlign: "center" }} value={sk.glyph} onChange={e=>handleSkillChange(cat, idx, "glyph", e.target.value)} placeholder="Glyph"/>
+                      <button className="cpanel-btn cpanel-btn-danger" style={{ padding: "6px 10px", fontSize: "12px", marginLeft: "auto" }} onClick={() => {
+                        const next = { ...skillsList };
+                        next[cat].splice(idx, 1);
+                        setSkillsList(next);
+                      }}>✕</button>
+                    </div>
+                  ))}
+                </div>
+              ))}
+              <button className="cpanel-btn cpanel-btn-primary" onClick={handleSaveSkills}>Save Skills Changes</button>
+            </div>
+          )}
+
+          {/* TAB 4: PROJECTS */}
+          {activeTab === "projects" && (
+            <div className="cpanel-card">
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px" }}>
+                <div className="cpanel-card-title" style={{ marginBottom: 0 }}>Portfolio Projects Showcase</div>
+                <button className="cpanel-btn cpanel-btn-outline" style={{ padding: "6px 12px", fontSize: "12px" }} onClick={()=>setProjectsList([...projectsList, { num: "0" + (projectsList.length + 1), title: "New Project", category: "Web", tech: "React, Node.js", type: "custom" }])}>+ Add New Project</button>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "14px", marginBottom: "20px" }}>
+                {projectsList.map((p, idx) => (
+                  <div key={idx} style={{ border: "1px solid rgba(255,255,255,0.08)", padding: "16px", borderRadius: "12px", background: "rgba(255,255,255,0.02)" }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "80px 1fr 140px", gap: "10px", marginBottom: "10px" }}>
+                      <input className="cpanel-input" value={p.num} onChange={e=>handleProjChange(idx, "num", e.target.value)} placeholder="Num"/>
+                      <input className="cpanel-input" value={p.title} onChange={e=>handleProjChange(idx, "title", e.target.value)} placeholder="Project Title"/>
+                      <input className="cpanel-input" value={p.category} onChange={e=>handleProjChange(idx, "category", e.target.value)} placeholder="Category"/>
+                    </div>
+                    <div className="cpanel-input-group" style={{ marginBottom: "10px" }}>
+                      <label>Technologies Used</label>
+                      <input className="cpanel-input" value={p.tech} onChange={e=>handleProjChange(idx, "tech", e.target.value)} placeholder="React, Node.js, Tailwind CSS"/>
+                    </div>
+                    <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+                      {p.imageUrl && <img src={p.imageUrl} alt="Thumbnail" style={{ width: "40px", height: "40px", borderRadius: "6px", objectFit: "cover" }} />}
+                      <input type="file" accept="image/*" className="cpanel-input" style={{ flex: 1 }} onChange={e=>handleProjImageUpload(idx, e)} />
+                      <button className="cpanel-btn cpanel-btn-danger" style={{ padding: "6px 12px", fontSize: "12px" }} onClick={() => {
+                        const next = [...projectsList];
+                        next.splice(idx, 1);
+                        setProjectsList(next);
+                      }}>Delete</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button className="cpanel-btn cpanel-btn-primary" onClick={handleSaveProjects}>Save Projects</button>
+            </div>
+          )}
+
+          {/* TAB 5: CERTIFICATES */}
+          {activeTab === "certs" && (
+            <div className="cpanel-card">
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px" }}>
+                <div className="cpanel-card-title" style={{ marginBottom: 0 }}>Certifications & Experience</div>
+                <button className="cpanel-btn cpanel-btn-outline" style={{ padding: "6px 12px", fontSize: "12px" }} onClick={()=>setCertsList([...certsList, { issuer: "Issuer Company", title: "Certification Title", date: "2026", id: "REF-001", desc: "Description text", tags: ["Web"] }])}>+ Add Certificate</button>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "20px" }}>
+                {certsList.map((c, idx) => (
+                  <div key={idx} style={{ border: "1px solid rgba(255,255,255,0.08)", padding: "16px", borderRadius: "12px", background: "rgba(255,255,255,0.02)" }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "10px" }}>
+                      <input className="cpanel-input" value={c.issuer} onChange={e=>handleCertChange(idx, "issuer", e.target.value)} placeholder="Issuer Company"/>
+                      <input className="cpanel-input" value={c.title} onChange={e=>handleCertChange(idx, "title", e.target.value)} placeholder="Certificate Title"/>
+                    </div>
+                    <div className="cpanel-input-group" style={{ marginBottom: "10px" }}>
+                      <label>Description</label>
+                      <textarea className="cpanel-input cpanel-textarea" value={c.desc} onChange={e=>handleCertChange(idx, "desc", e.target.value)} placeholder="Completed 5-month internship..."/>
+                    </div>
+                    <button className="cpanel-btn cpanel-btn-danger" style={{ padding: "6px 12px", fontSize: "12px" }} onClick={() => {
+                      const next = [...certsList];
+                      next.splice(idx, 1);
+                      setCertsList(next);
+                    }}>Delete Certificate</button>
+                  </div>
+                ))}
+              </div>
+              <button className="cpanel-btn cpanel-btn-primary" onClick={handleSaveCerts}>Save Certificates</button>
+            </div>
+          )}
+
+          {/* TAB 6: LEADS */}
+          {activeTab === "leads" && (
+            <div className="cpanel-card">
+              <div className="cpanel-card-title">
+                <div>Client Messages & Leads ({leadsList.length})</div>
+                {leadsList.length > 0 && (
+                  <button className="cpanel-btn cpanel-btn-danger" style={{ padding: "4px 10px", fontSize: "11px" }} onClick={async () => {
+                    if (confirm("Are you sure you want to clear all lead messages?")) {
+                      try {
+                        const res = await fetch(`${API_BASE}/api/leads`, { method: "DELETE" });
+                        if (res.ok) {
+                          setLeadsList([]);
+                          showToast("All leads cleared.");
+                        }
+                      } catch(e) { console.error(e); }
+                    }
+                  }}>Clear All Leads</button>
+                )}
+              </div>
+              {leadsList.length === 0 ? (
+                <div style={{ textAlign: "center", padding: "40px 20px", color: "#9aa3b8" }}>
+                  <div style={{ fontSize: "32px", marginBottom: "10px" }}>📥</div>
+                  <div>No lead messages in your inbox yet.</div>
+                </div>
+              ) : (
+                leadsList.map((lead) => (
+                  <div className="lead-row" key={lead.id}>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px", color: "#9aa3b8", marginBottom: "6px" }}>
+                      <div><strong style={{ color: "#ffffff" }}>{lead.name}</strong> ({lead.email})</div>
+                      <div style={{ fontSize: "12px" }}>{lead.date}</div>
+                    </div>
+                    <div style={{ fontSize: "14px", fontWeight: "600", color: "#38bdf8", marginBottom: "6px" }}>Subject: {lead.subject}</div>
+                    <div style={{ fontSize: "13.5px", color: "#f1f3f9", background: "rgba(255,255,255,0.03)", padding: "12px 14px", borderRadius: "10px", border: "1px solid rgba(255,255,255,0.06)", marginBottom: "12px", lineHeight: "1.5" }}>
+                      {lead.message}
+                    </div>
+                    <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                      <a href={`mailto:${lead.email}?subject=Re: ${encodeURIComponent(lead.subject || "Inquiry")}`} className="cpanel-btn cpanel-btn-outline" style={{ textDecoration: "none", fontSize: "12px", padding: "6px 12px" }}>
+                        ✉️ Email Reply
+                      </a>
+                      <a href={`https://wa.me/?text=${encodeURIComponent(`Hi ${lead.name}, regarding "${lead.subject || "your message"}"`)}`} target="_blank" rel="noopener noreferrer" className="cpanel-btn cpanel-btn-primary" style={{ textDecoration: "none", fontSize: "12px", padding: "6px 12px" }}>
+                        💬 WhatsApp Reply
+                      </a>
+                      <button className="cpanel-btn cpanel-btn-danger" style={{ fontSize: "12px", padding: "6px 12px", marginLeft: "auto" }} onClick={async () => {
+                        try {
+                          const res = await fetch(`${API_BASE}/api/leads/${lead.id}`, { method: "DELETE" });
+                          if (res.ok) {
+                            setLeadsList(leadsList.filter(l => l.id !== lead.id));
+                            showToast("Lead removed from inbox.");
+                          }
+                        } catch(err) { console.error(err); }
+                      }}>Delete</button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Floating Toast Notification */}
+      <div className={`toast ${toast.show ? "show" : ""}`} style={{ position: "fixed", bottom: "24px", right: "24px", zIndex: 10000 }}>
+        ⚡ {toast.msg}
+      </div>
+    </div>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById("admin-root")).render(<AdminApp />);
+  </script>
+  <script>
+    var source = document.getElementById("admin-source").textContent;
+    var compiled = Babel.transform(source, {
+      presets: [["react", { runtime: "classic" }]]
+    }).code;
+    var runnable = document.createElement("script");
+    runnable.textContent = compiled;
+    document.body.appendChild(runnable);
+  </script>
+</body>
+</html>

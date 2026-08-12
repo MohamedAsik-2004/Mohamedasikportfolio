@@ -209,6 +209,32 @@ app.get('/api/portfolio-data', (req, res) => {
   });
 });
 
+// Real-time Event Stream (Server-Sent Events)
+let sseClients = [];
+
+app.get('/api/events', (req, res) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.flushHeaders();
+
+  sseClients.push(res);
+
+  req.on('close', () => {
+    sseClients = sseClients.filter(client => client !== res);
+  });
+});
+
+const notifyClientsOfDataUpdate = (data) => {
+  sseClients.forEach(client => {
+    try {
+      client.write(`data: ${JSON.stringify({ type: 'PORTFOLIO_UPDATED', data })}\n\n`);
+    } catch (e) {
+      console.error("Error broadcasting SSE:", e);
+    }
+  });
+};
+
 app.post('/api/portfolio-data', (req, res) => {
   const { data } = req.body;
   if (!data) {
@@ -220,6 +246,7 @@ app.post('/api/portfolio-data', (req, res) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
+    notifyClientsOfDataUpdate(data);
     res.json({ success: true, data });
   });
 });
@@ -275,6 +302,11 @@ app.delete('/api/leads', (req, res) => {
 
 // Serve static frontend files
 app.use(express.static(__dirname));
+
+// Serve standalone admin portal route
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin.html'));
+});
 
 // Catch-all route to serve index.html
 app.get('*', (req, res) => {
