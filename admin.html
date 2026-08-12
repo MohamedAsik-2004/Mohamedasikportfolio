@@ -68,7 +68,13 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js" crossorigin></script>
 
   <script type="text/plain" id="admin-source">
-const API_BASE = '';
+const getApiBase = () => {
+  if (typeof window !== 'undefined' && window.location.hostname.includes('github.io')) {
+    return 'https://mohamedasik-portfolio.onrender.com';
+  }
+  return '';
+};
+const API_BASE = getApiBase();
 
 const DEFAULT_DATA = {
   hero: { firstName: "Mohamed Asik", lastName: "K", role: "Flutter Developer", bio: "I craft stunning digital experiences that merge elegant design with powerful functionality. Let's build something extraordinary together.", resumeUrl: "#", avatarUrl: "", socials: { github: "#", linkedin: "#", instagram: "#", twitter: "#" } },
@@ -136,7 +142,7 @@ const AdminApp = () => {
 
     let eventSource;
     try {
-      eventSource = new EventSource('/api/events');
+      eventSource = new EventSource(`${API_BASE}/api/events`);
       eventSource.onmessage = (e) => {
         try {
           const payload = JSON.parse(e.data);
@@ -171,15 +177,21 @@ const AdminApp = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password })
       });
+      
+      const contentType = res.headers.get("content-type");
+      if (!res.ok || !contentType || !contentType.includes("application/json")) {
+        throw new Error("Backend server unavailable or returned HTML (404). If using Render, please ensure your web service is active.");
+      }
+
       const resData = await res.json();
-      if (res.ok && resData.success) {
+      if (resData.success) {
         setIsLoggedIn(true);
         showToast("Access Granted. Welcome to your Admin C-Panel!");
       } else {
         setLoginError(resData.error || "Invalid Username or Password.");
       }
     } catch(err) {
-      setLoginError("Login query failed: " + err.message);
+      setLoginError("Login failed: " + err.message);
     }
   };
 
