@@ -316,11 +316,27 @@ app.get('/api/portfolio-data', (req, res) => {
 // Real-time Event Stream (Server-Sent Events)
 let sseClients = [];
 
+// Periodic heartbeat to prevent proxies/Render load balancers from closing idle connections
+setInterval(() => {
+  sseClients.forEach(client => {
+    try {
+      client.write(`:ping\n\n`);
+    } catch (e) {
+      // client connection ended
+    }
+  });
+}, 15000);
+
 app.get('/api/events', (req, res) => {
   res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Cache-Control', 'no-cache, no-transform');
   res.setHeader('Connection', 'keep-alive');
+  res.setHeader('X-Accel-Buffering', 'no');
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.flushHeaders();
+
+  // Send initial handshake ping
+  res.write(`data: ${JSON.stringify({ type: 'CONNECTED' })}\n\n`);
 
   sseClients.push(res);
 
@@ -330,6 +346,7 @@ app.get('/api/events', (req, res) => {
 });
 
 const notifyClientsOfDataUpdate = (data) => {
+  console.log(`Broadcasting data update to ${sseClients.length} connected SSE clients...`);
   sseClients.forEach(client => {
     try {
       client.write(`data: ${JSON.stringify({ type: 'PORTFOLIO_UPDATED', data })}\n\n`);

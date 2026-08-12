@@ -25,7 +25,11 @@
 
   <script type="text/plain" id="app-source">
 const getApiBase = () => {
-  if (typeof window !== 'undefined' && window.location.hostname.includes('github.io')) {
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1' || host === '::1') {
+      return '';
+    }
     return 'https://mohamedasik-portfolio.onrender.com';
   }
   return '';
@@ -1904,12 +1908,23 @@ function App() {
   const [toast, setToast] = useState({ show: false, msg: "" });
 
   useEffect(() => {
+    // 1. Load cached data from localStorage immediately for instant 0ms load
+    try {
+      const cached = localStorage.getItem("portfolio_data");
+      if (cached) {
+        setPortfolioData(JSON.parse(cached));
+      }
+    } catch(e) {}
+
     const fetchPortfolioData = async () => {
       try {
         const res = await fetch(`${API_BASE}/api/portfolio-data`);
         if (res.ok) {
           const data = await res.json();
           setPortfolioData(data);
+          try {
+            localStorage.setItem("portfolio_data", JSON.stringify(data));
+          } catch(e) {}
         }
       } catch(err) {
         console.error("Error loading portfolio data:", err);
@@ -1917,27 +1932,73 @@ function App() {
     };
     fetchPortfolioData();
 
-    // Real-Time Live Sync EventSource Listener
-    let eventSource;
-    try {
-      eventSource = new EventSource(`${API_BASE}/api/events`);
-      eventSource.onmessage = (e) => {
-        try {
-          const payload = JSON.parse(e.data);
-          if (payload.type === 'PORTFOLIO_UPDATED' && payload.data) {
-            setPortfolioData(payload.data);
+    // 2. BroadcastChannel Listener (Instant sync across tabs in same browser)
+    let bc;
+    if (typeof BroadcastChannel !== 'undefined') {
+      try {
+        bc = new BroadcastChannel('portfolio_sync');
+        bc.onmessage = (e) => {
+          if (e.data && e.data.type === 'PORTFOLIO_UPDATED' && e.data.data) {
+            setPortfolioData(e.data.data);
+            try {
+              localStorage.setItem("portfolio_data", JSON.stringify(e.data.data));
+            } catch(err) {}
             showToast("⚡ Portfolio updated live!");
           }
-        } catch(err) {
-          console.error("SSE Message parse error:", err);
-        }
-      };
-    } catch(err) {
-      console.error("EventSource error:", err);
+        };
+      } catch(e) {}
     }
+
+    // 3. Re-fetch when user switches back to tab
+    const onFocus = () => fetchPortfolioData();
+    window.addEventListener("focus", onFocus);
+
+    // 4. Fallback Polling every 12s in case SSE is disconnected
+    const pollInterval = setInterval(() => {
+      fetchPortfolioData();
+    }, 12000);
+
+    // 5. Real-Time Live Sync EventSource Listener with auto-reconnect
+    let eventSource;
+    let reconnectTimer;
+
+    const connectSSE = () => {
+      try {
+        if (eventSource) eventSource.close();
+        eventSource = new EventSource(`${API_BASE}/api/events`);
+        eventSource.onmessage = (e) => {
+          try {
+            const payload = JSON.parse(e.data);
+            if (payload.type === 'PORTFOLIO_UPDATED' && payload.data) {
+              setPortfolioData(payload.data);
+              try {
+                localStorage.setItem("portfolio_data", JSON.stringify(payload.data));
+              } catch(err) {}
+              showToast("⚡ Portfolio updated live!");
+            }
+          } catch(err) {
+            console.error("SSE Message parse error:", err);
+          }
+        };
+
+        eventSource.onerror = () => {
+          if (eventSource) eventSource.close();
+          clearTimeout(reconnectTimer);
+          reconnectTimer = setTimeout(connectSSE, 5000);
+        };
+      } catch(err) {
+        console.error("EventSource error:", err);
+      }
+    };
+
+    connectSSE();
 
     return () => {
       if (eventSource) eventSource.close();
+      if (bc) bc.close();
+      window.removeEventListener("focus", onFocus);
+      clearInterval(pollInterval);
+      clearTimeout(reconnectTimer);
     };
   }, []);
 
