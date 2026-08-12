@@ -1097,6 +1097,7 @@ const HeroPortrait = ({ avatarUrl }) => {
           src={avatarUrl}
           alt="MOHAMED ASIK K"
           className="hero-portrait-image"
+          loading="lazy"
           onError={() => setImgFailed(true)}
         />
       ) : (
@@ -1215,6 +1216,7 @@ const AboutPortrait = ({ avatarUrl }) => {
           src={avatarUrl}
           alt="Avatar"
           className="about-portrait-img"
+          loading="lazy"
           onError={() => setImgFailed(true)}
         />
       ) : (
@@ -1357,6 +1359,12 @@ const CertCard = ({ c, i }) => (
       </div>
     </div>
     
+    {c.imageUrl && (
+      <div className="cert-image-preview" style={{ width: '100%', height: '140px', borderRadius: '12px', overflow: 'hidden', margin: '12px 0', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <img src={c.imageUrl} alt={c.title} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+      </div>
+    )}
+    
     <h3 className="cert-title-header">{c.title}</h3>
     
     <div className="cert-meta-container">
@@ -1364,10 +1372,12 @@ const CertCard = ({ c, i }) => (
         <div className="cert-meta-icon"><Icon name="calendar" size={15} /></div>
         <div>Issued: {c.date}</div>
       </div>
-      <div className="cert-meta-row">
-        <div className="cert-meta-icon"><Icon name="id" size={15} /></div>
-        <div>ID: {c.id}</div>
-      </div>
+      {c.id && (
+        <div className="cert-meta-row">
+          <div className="cert-meta-icon"><Icon name="id" size={15} /></div>
+          <div>ID: {c.id}</div>
+        </div>
+      )}
     </div>
     
     <p className="cert-desc">{c.desc}</p>
@@ -1378,9 +1388,17 @@ const CertCard = ({ c, i }) => (
       ))}
     </div>
     
-    <a href="#" className="cert-action-button" onClick={(e) => { e.preventDefault(); }}>
+    <a 
+      href={c.imageUrl || c.link || "#"} 
+      target="_blank" 
+      rel="noopener noreferrer" 
+      className="cert-action-button" 
+      onClick={(e) => { 
+        if (!c.imageUrl && (!c.link || c.link === "#")) e.preventDefault(); 
+      }}
+    >
       <Icon name="external" size={15} />
-      Open Certificate
+      {c.imageUrl ? "View Certificate Photo" : "Open Certificate"}
     </a>
   </Reveal>
 );
@@ -1611,7 +1629,7 @@ const ProjectCard = ({ p, i, activeIdx, onClick, cardW, onOpenModal }) => {
 
       {p.imageUrl ? (
         <div className="project-card-visual">
-          <img src={p.imageUrl} alt={p.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <img src={p.imageUrl} alt={p.title} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         </div>
       ) : (
         <div className="project-card-mockup-wrapper">

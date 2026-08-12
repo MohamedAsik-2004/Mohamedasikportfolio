@@ -258,12 +258,63 @@ const AdminApp = () => {
     setCertsList(next);
   };
 
-  const handleHeroImageUpload = (e) => {
+  const compressImage = (file, maxWidth = 900, maxHeight = 900, quality = 0.75) => {
+    return new Promise((resolve) => {
+      if (!file || !file.type.startsWith("image/")) {
+        resolve(null);
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          let width = img.width;
+          let height = img.height;
+          if (width > height) {
+            if (width > maxWidth) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            }
+          } else {
+            if (height > maxHeight) {
+              width = Math.round((width * maxHeight) / height);
+              height = maxHeight;
+            }
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+          try {
+            const webpData = canvas.toDataURL("image/webp", quality);
+            if (webpData && webpData.startsWith("data:image/webp")) {
+              resolve(webpData);
+              return;
+            }
+          } catch(err) {}
+          resolve(canvas.toDataURL("image/jpeg", quality));
+        };
+        img.onerror = () => resolve(e.target.result);
+        img.src = e.target.result;
+      };
+      reader.onerror = () => resolve(null);
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleHeroImageUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setHeroForm({ ...heroForm, avatarUrl: reader.result });
-      reader.readAsDataURL(file);
+      const compressed = await compressImage(file, 600, 600, 0.8);
+      if (compressed) {
+        setHeroForm(prev => ({ ...prev, avatarUrl: compressed }));
+        showToast("Profile photo compressed & uploaded!");
+      } else {
+        const reader = new FileReader();
+        reader.onloadend = () => setHeroForm(prev => ({ ...prev, avatarUrl: reader.result }));
+        reader.readAsDataURL(file);
+      }
     }
   };
 
@@ -271,17 +322,38 @@ const AdminApp = () => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => setHeroForm({ ...heroForm, resumeUrl: reader.result });
+      reader.onloadend = () => setHeroForm(prev => ({ ...prev, resumeUrl: reader.result }));
       reader.readAsDataURL(file);
     }
   };
 
-  const handleProjImageUpload = (idx, e) => {
+  const handleProjImageUpload = async (idx, e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => handleProjChange(idx, "imageUrl", reader.result);
-      reader.readAsDataURL(file);
+      const compressed = await compressImage(file, 1000, 800, 0.75);
+      if (compressed) {
+        handleProjChange(idx, "imageUrl", compressed);
+        showToast("Project photo compressed & uploaded!");
+      } else {
+        const reader = new FileReader();
+        reader.onloadend = () => handleProjChange(idx, "imageUrl", reader.result);
+        reader.readAsDataURL(file);
+      }
+    }
+  };
+
+  const handleCertImageUpload = async (idx, e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const compressed = await compressImage(file, 1000, 800, 0.75);
+      if (compressed) {
+        handleCertChange(idx, "imageUrl", compressed);
+        showToast("Certificate photo compressed & uploaded!");
+      } else {
+        const reader = new FileReader();
+        reader.onloadend = () => handleCertChange(idx, "imageUrl", reader.result);
+        reader.readAsDataURL(file);
+      }
     }
   };
 
@@ -491,7 +563,7 @@ const AdminApp = () => {
             <div className="cpanel-card">
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px" }}>
                 <div className="cpanel-card-title" style={{ marginBottom: 0 }}>Portfolio Projects Showcase</div>
-                <button className="cpanel-btn cpanel-btn-outline" style={{ padding: "6px 12px", fontSize: "12px" }} onClick={()=>setProjectsList([...projectsList, { num: "0" + (projectsList.length + 1), title: "New Project", category: "Web", tech: "React, Node.js", type: "custom" }])}>+ Add New Project</button>
+                <button className="cpanel-btn cpanel-btn-outline" style={{ padding: "6px 12px", fontSize: "12px" }} onClick={()=>setProjectsList([...projectsList, { num: "0" + (projectsList.length + 1), title: "New Project", category: "Web", tech: "React, Node.js", liveUrl: "", githubUrl: "", desc: "", type: "custom" }])}>+ Add New Project</button>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "14px", marginBottom: "20px" }}>
                 {projectsList.map((p, idx) => (
@@ -502,12 +574,29 @@ const AdminApp = () => {
                       <input className="cpanel-input" value={p.category} onChange={e=>handleProjChange(idx, "category", e.target.value)} placeholder="Category"/>
                     </div>
                     <div className="cpanel-input-group" style={{ marginBottom: "10px" }}>
-                      <label>Technologies Used</label>
+                      <label style={{ fontSize: "12px", color: "rgba(255,255,255,0.7)" }}>Technologies Used</label>
                       <input className="cpanel-input" value={p.tech} onChange={e=>handleProjChange(idx, "tech", e.target.value)} placeholder="React, Node.js, Tailwind CSS"/>
                     </div>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "10px" }}>
+                      <div>
+                        <label style={{ fontSize: "11px", color: "rgba(255,255,255,0.5)", display: "block", marginBottom: "3px" }}>Live Project Demo URL</label>
+                        <input className="cpanel-input" value={p.liveUrl || ""} onChange={e=>handleProjChange(idx, "liveUrl", e.target.value)} placeholder="https://my-live-app.com"/>
+                      </div>
+                      <div>
+                        <label style={{ fontSize: "11px", color: "rgba(255,255,255,0.5)", display: "block", marginBottom: "3px" }}>GitHub Repository URL</label>
+                        <input className="cpanel-input" value={p.githubUrl || ""} onChange={e=>handleProjChange(idx, "githubUrl", e.target.value)} placeholder="https://github.com/..."/>
+                      </div>
+                    </div>
+                    <div className="cpanel-input-group" style={{ marginBottom: "10px" }}>
+                      <label style={{ fontSize: "12px", color: "rgba(255,255,255,0.7)" }}>Project Description</label>
+                      <textarea className="cpanel-input cpanel-textarea" value={p.desc || ""} onChange={e=>handleProjChange(idx, "desc", e.target.value)} placeholder="Brief summary of key features and architecture..."/>
+                    </div>
                     <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                      {p.imageUrl && <img src={p.imageUrl} alt="Thumbnail" style={{ width: "40px", height: "40px", borderRadius: "6px", objectFit: "cover" }} />}
-                      <input type="file" accept="image/*" className="cpanel-input" style={{ flex: 1 }} onChange={e=>handleProjImageUpload(idx, e)} />
+                      {p.imageUrl && <img src={p.imageUrl} alt="Thumbnail" style={{ width: "45px", height: "45px", borderRadius: "6px", objectFit: "cover" }} />}
+                      <div style={{ flex: 1 }}>
+                        <label style={{ fontSize: "11px", color: "rgba(255,255,255,0.5)", display: "block", marginBottom: "3px" }}>Upload Project Screenshot (Auto-Compressed WebP)</label>
+                        <input type="file" accept="image/*" className="cpanel-input" onChange={e=>handleProjImageUpload(idx, e)} />
+                      </div>
                       <button className="cpanel-btn cpanel-btn-danger" style={{ padding: "6px 12px", fontSize: "12px" }} onClick={() => {
                         const next = [...projectsList];
                         next.splice(idx, 1);
@@ -526,24 +615,51 @@ const AdminApp = () => {
             <div className="cpanel-card">
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px" }}>
                 <div className="cpanel-card-title" style={{ marginBottom: 0 }}>Certifications & Experience</div>
-                <button className="cpanel-btn cpanel-btn-outline" style={{ padding: "6px 12px", fontSize: "12px" }} onClick={()=>setCertsList([...certsList, { issuer: "Issuer Company", title: "Certification Title", date: "2026", id: "REF-001", desc: "Description text", tags: ["Web"] }])}>+ Add Certificate</button>
+                <button className="cpanel-btn cpanel-btn-outline" style={{ padding: "6px 12px", fontSize: "12px" }} onClick={()=>setCertsList([...certsList, { issuer: "Issuer Company", title: "Certification Title", date: "2026", id: "REF-001", link: "", desc: "Description text", tags: ["Web"] }])}>+ Add Certificate</button>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "20px" }}>
                 {certsList.map((c, idx) => (
                   <div key={idx} style={{ border: "1px solid rgba(255,255,255,0.08)", padding: "16px", borderRadius: "12px", background: "rgba(255,255,255,0.02)" }}>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "10px" }}>
-                      <input className="cpanel-input" value={c.issuer} onChange={e=>handleCertChange(idx, "issuer", e.target.value)} placeholder="Issuer Company"/>
-                      <input className="cpanel-input" value={c.title} onChange={e=>handleCertChange(idx, "title", e.target.value)} placeholder="Certificate Title"/>
+                      <div>
+                        <label style={{ fontSize: "11px", color: "rgba(255,255,255,0.5)", display: "block", marginBottom: "3px" }}>Issuer / Organization</label>
+                        <input className="cpanel-input" value={c.issuer} onChange={e=>handleCertChange(idx, "issuer", e.target.value)} placeholder="IBM / Coursera / Meta"/>
+                      </div>
+                      <div>
+                        <label style={{ fontSize: "11px", color: "rgba(255,255,255,0.5)", display: "block", marginBottom: "3px" }}>Certificate Title</label>
+                        <input className="cpanel-input" value={c.title} onChange={e=>handleCertChange(idx, "title", e.target.value)} placeholder="Business Intelligence Specialist"/>
+                      </div>
+                    </div>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "10px" }}>
+                      <div>
+                        <label style={{ fontSize: "11px", color: "rgba(255,255,255,0.5)", display: "block", marginBottom: "3px" }}>Issue Date</label>
+                        <input className="cpanel-input" value={c.date || ""} onChange={e=>handleCertChange(idx, "date", e.target.value)} placeholder="June 2026"/>
+                      </div>
+                      <div>
+                        <label style={{ fontSize: "11px", color: "rgba(255,255,255,0.5)", display: "block", marginBottom: "3px" }}>Credential ID</label>
+                        <input className="cpanel-input" value={c.id || ""} onChange={e=>handleCertChange(idx, "id", e.target.value)} placeholder="IBM-BI-9923"/>
+                      </div>
+                      <div>
+                        <label style={{ fontSize: "11px", color: "rgba(255,255,255,0.5)", display: "block", marginBottom: "3px" }}>Verification Link</label>
+                        <input className="cpanel-input" value={c.link || ""} onChange={e=>handleCertChange(idx, "link", e.target.value)} placeholder="https://coursera.org/verify/..."/>
+                      </div>
                     </div>
                     <div className="cpanel-input-group" style={{ marginBottom: "10px" }}>
-                      <label>Description</label>
-                      <textarea className="cpanel-input cpanel-textarea" value={c.desc} onChange={e=>handleCertChange(idx, "desc", e.target.value)} placeholder="Completed 5-month internship..."/>
+                      <label style={{ fontSize: "12px", color: "rgba(255,255,255,0.7)" }}>Description</label>
+                      <textarea className="cpanel-input cpanel-textarea" value={c.desc} onChange={e=>handleCertChange(idx, "desc", e.target.value)} placeholder="Completed comprehensive coursework..."/>
                     </div>
-                    <button className="cpanel-btn cpanel-btn-danger" style={{ padding: "6px 12px", fontSize: "12px" }} onClick={() => {
-                      const next = [...certsList];
-                      next.splice(idx, 1);
-                      setCertsList(next);
-                    }}>Delete Certificate</button>
+                    <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+                      {c.imageUrl && <img src={c.imageUrl} alt="Cert Preview" style={{ width: "45px", height: "45px", borderRadius: "6px", objectFit: "cover" }} />}
+                      <div style={{ flex: 1 }}>
+                        <label style={{ fontSize: "11px", color: "rgba(255,255,255,0.5)", display: "block", marginBottom: "3px" }}>Upload Certificate Photo (Auto-Compressed WebP)</label>
+                        <input type="file" accept="image/*" className="cpanel-input" onChange={e=>handleCertImageUpload(idx, e)} />
+                      </div>
+                      <button className="cpanel-btn cpanel-btn-danger" style={{ padding: "6px 12px", fontSize: "12px" }} onClick={() => {
+                        const next = [...certsList];
+                        next.splice(idx, 1);
+                        setCertsList(next);
+                      }}>Delete Certificate</button>
+                    </div>
                   </div>
                 ))}
               </div>

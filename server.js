@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const compression = require('compression');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
@@ -191,6 +192,7 @@ const DEFAULT_PORTFOLIO_DATA_FALLBACK = {
 };
 
 // Middleware
+app.use(compression());
 app.use(cors());
 app.use(express.json({ limit: '50mb' })); // support large payloads for base64 images/resumes
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
@@ -269,9 +271,12 @@ app.post('/api/login', (req, res) => {
     return res.status(400).json({ error: 'Username and password are required' });
   }
 
-  // Accept flexible standard admin passwords
-  if (username.trim().toLowerCase() === 'admin' && ['asik2004', 'admin123', 'admin'].includes(password.trim())) {
-    return res.json({ success: true, username: 'admin' });
+  const envUsername = (process.env.ADMIN_USERNAME || 'admin').trim().toLowerCase();
+  const envPassword = process.env.ADMIN_PASSWORD || 'asik2004';
+  const allowedPasswords = [envPassword, 'asik2004', 'admin123', 'admin'];
+
+  if (username.trim().toLowerCase() === envUsername && allowedPasswords.includes(password.trim())) {
+    return res.json({ success: true, username: envUsername });
   }
 
   db.get("SELECT * FROM users WHERE username = ? AND password = ?", [username, password], (err, row) => {
