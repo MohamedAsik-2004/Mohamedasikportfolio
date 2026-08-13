@@ -81,12 +81,16 @@
 const getApiBase = () => {
   if (typeof window !== 'undefined') {
     const host = window.location.hostname;
+    const port = window.location.port;
     if (host === 'localhost' || host === '127.0.0.1' || host === '::1') {
-      return '';
+      if (port === '5000' || port === '3000' || port === '') {
+        return '';
+      }
+      return 'http://localhost:5000';
     }
     return 'https://mohamedasik-portfolio.onrender.com';
   }
-  return '';
+  return 'https://mohamedasik-portfolio.onrender.com';
 };
 const API_BASE = getApiBase();
 
