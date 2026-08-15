@@ -563,13 +563,24 @@ const AdminApp = () => {
 ReactDOM.createRoot(document.getElementById("admin-root")).render(<AdminApp />);
   </script>
   <script>
-    var source = document.getElementById("admin-source").textContent;
-    var compiled = Babel.transform(source, {
-      presets: [["react", { runtime: "classic" }]]
-    }).code;
-    var runnable = document.createElement("script");
-    runnable.textContent = compiled;
-    document.body.appendChild(runnable);
+    try {
+      var source = document.getElementById("admin-source").textContent;
+      var compiled;
+      try {
+        compiled = Babel.transform(source, { presets: [["react", { runtime: "classic" }]] }).code;
+      } catch (e1) {
+        console.warn("Babel transform with classic runtime failed, trying default react preset:", e1);
+        compiled = Babel.transform(source, { presets: ["react"] }).code;
+      }
+      var runnable = document.createElement("script");
+      runnable.textContent = compiled;
+      document.body.appendChild(runnable);
+    } catch (err) {
+      console.error("Critical error compiling Admin application:", err);
+      if (document.getElementById("admin-root")) {
+        document.getElementById("admin-root").innerHTML = "<div style='color:#ef4444;padding:40px;text-align:center;font-family:sans-serif;'><h2>Admin Application Error</h2><p style='color:#9aa3b8;'>" + err.message + "</p></div>";
+      }
+    }
   </script>
 </body>
 </html>

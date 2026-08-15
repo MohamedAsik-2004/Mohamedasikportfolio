@@ -2918,16 +2918,24 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App />);
 
 </script>
   <script>
-    // Manually compile the JSX source with the classic runtime so it works
-    // as a plain script (avoids Babel's automatic runtime, which injects an
-    // `import` statement that breaks in a non-module <script> tag).
-    var source = document.getElementById("app-source").textContent;
-    var compiled = Babel.transform(source, {
-      presets: [["react", { runtime: "classic" }]]
-    }).code;
-    var runnable = document.createElement("script");
-    runnable.textContent = compiled;
-    document.body.appendChild(runnable);
+    try {
+      var source = document.getElementById("app-source").textContent;
+      var compiled;
+      try {
+        compiled = Babel.transform(source, { presets: [["react", { runtime: "classic" }]] }).code;
+      } catch (e1) {
+        console.warn("Babel transform with classic runtime failed, trying default react preset:", e1);
+        compiled = Babel.transform(source, { presets: ["react"] }).code;
+      }
+      var runnable = document.createElement("script");
+      runnable.textContent = compiled;
+      document.body.appendChild(runnable);
+    } catch (err) {
+      console.error("Critical error compiling React application:", err);
+      if (document.getElementById("root")) {
+        document.getElementById("root").innerHTML = "<div style='color:#ef4444;padding:40px;text-align:center;font-family:sans-serif;'><h2>Application Compilation Error</h2><p style='color:#9aa3b8;'>" + err.message + "</p></div>";
+      }
+    }
   </script>
 </body>
 
