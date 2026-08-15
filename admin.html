@@ -44,10 +44,11 @@
   <script type="text/plain" id="admin-source">
 const getApiBase = () => {
   if (typeof window !== 'undefined') {
+    const protocol = window.location.protocol;
     const host = window.location.hostname;
     const port = window.location.port;
-    if (host === 'localhost' || host === '127.0.0.1' || host === '::1') {
-      if (port === '5000' || port === '3000' || port === '') return '';
+    if (protocol === 'file:' || host === '' || host === 'localhost' || host === '127.0.0.1' || host === '::1') {
+      if (port === '5000' || port === '3000') return '';
       return 'http://localhost:5000';
     }
     return 'https://mohamedasikportfolio-production.up.railway.app';
