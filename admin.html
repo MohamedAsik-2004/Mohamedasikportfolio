@@ -562,10 +562,13 @@ const AdminApp = () => {
                       <strong style={{ color: "#fff" }}>{lead.name}</strong> ({lead.email}) <span>{lead.date}</span>
                     </div>
                     <div style={{ fontSize: "13.5px", margin: "8px 0" }}>{lead.message}</div>
-                    <button className="cpanel-btn cpanel-btn-danger" style={{ fontSize: "11px", padding: "4px 8px" }} onClick={async () => {
-                      await fetch(`${API_BASE}/api/leads/${lead.id}`, { method: "DELETE" });
-                      setLeadsList(leadsList.filter(l => l.id !== lead.id));
-                    }}>Delete Lead</button>
+                    <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                      <a href={`mailto:${lead.email}?subject=${encodeURIComponent("Re: " + (lead.subject || "Portfolio Inquiry"))}&body=${encodeURIComponent("Hi " + lead.name + ",\n\nThanks for reaching out!\n\n")}`} className="cpanel-btn cpanel-btn-outline" style={{ fontSize: "11px", padding: "4px 10px", textDecoration: "none" }}>✉️ Reply Email</a>
+                      <button className="cpanel-btn cpanel-btn-danger" style={{ fontSize: "11px", padding: "4px 8px" }} onClick={async () => {
+                        await fetch(`${API_BASE}/api/leads/${lead.id}`, { method: "DELETE" });
+                        setLeadsList(leadsList.filter(l => l.id !== lead.id));
+                      }}>Delete Lead</button>
+                    </div>
                   </div>
                 ))
               )}
