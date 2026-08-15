@@ -905,7 +905,6 @@ const AdminPanel = ({ onClose, showToast }) => {
         <div className="cpanel-sidebar">
           <button className={`cpanel-sidebar-item ${activeTab==="db"?"active":""}`} onClick={()=>setActiveTab("db")}>ℹ️ Overview</button>
           <button className={`cpanel-sidebar-item ${activeTab==="hero"?"active":""}`} onClick={()=>setActiveTab("hero")}>👤 Hero & About</button>
-          <button className={`cpanel-sidebar-item ${activeTab==="story"?"active":""}`} onClick={()=>setActiveTab("story")}>📖 Full Story</button>
           <button className={`cpanel-sidebar-item ${activeTab==="academic"?"active":""}`} onClick={()=>setActiveTab("academic")}>🎓 Academic</button>
           <button className={`cpanel-sidebar-item ${activeTab==="experience"?"active":""}`} onClick={()=>setActiveTab("experience")}>💼 Experience</button>
           <button className={`cpanel-sidebar-item ${activeTab==="skills"?"active":""}`} onClick={()=>setActiveTab("skills")}>⚡ Skills</button>
@@ -950,13 +949,6 @@ const AdminPanel = ({ onClose, showToast }) => {
                   <div className="cpanel-input-group cpanel-form-full"><label>Role / Subhead</label><input className="cpanel-input" value={heroForm.role} onChange={e=>setHeroForm({...heroForm, role:e.target.value})}/></div>
                   <div className="cpanel-input-group cpanel-form-full"><label>Availability Badge Status</label><input className="cpanel-input" value={heroForm.availability || "Open to Opportunities"} onChange={e=>setHeroForm({...heroForm, availability:e.target.value})}/></div>
                   <div className="cpanel-input-group cpanel-form-full"><label>Hero Biography</label><textarea className="cpanel-input cpanel-textarea" value={heroForm.bio} onChange={e=>setHeroForm({...heroForm, bio:e.target.value})}/></div>
-                  <div className="cpanel-input-group cpanel-form-full">
-                    <label>Upload Resume (PDF/DOC)</label>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      {heroForm.resumeUrl && heroForm.resumeUrl.startsWith("data:") && <span style={{fontSize: "12px", color: "#35d68a"}}>File Selected ✓</span>}
-                      <input type="file" accept=".pdf,.doc,.docx" className="cpanel-input" onChange={handleResumeUpload} style={{ flex: 1 }} />
-                    </div>
-                  </div>
                   <div className="cpanel-input-group cpanel-form-full">
                     <label>Upload Hero Avatar Image</label>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -1022,84 +1014,6 @@ const AdminPanel = ({ onClose, showToast }) => {
                 </div>
               </div>
               <button type="submit" className="cpanel-btn cpanel-btn-primary">Save Hero & Social Info</button>
-            </form>
-          )}
-
-          {activeTab === "story" && (
-            <form onSubmit={handleSaveStory}>
-              <div className="cpanel-card">
-                <div className="cpanel-card-title">Career Story Header</div>
-                <div className="cpanel-input-group cpanel-form-full">
-                  <label>Story Subtitle</label>
-                  <input
-                    className="cpanel-input"
-                    value={storyForm.subtitle || ""}
-                    onChange={e => setStoryForm({ ...storyForm, subtitle: e.target.value })}
-                    placeholder="A career narrative driven by curiosity..."
-                  />
-                </div>
-              </div>
-
-              <div className="cpanel-card">
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                  <div className="cpanel-card-title" style={{ marginBottom: 0 }}>
-                    Story Chapters ({(storyForm.chapters || []).length})
-                  </div>
-                  <button type="button" className="cpanel-btn cpanel-btn-outline" style={{ padding: "5px 12px", fontSize: "12px" }} onClick={handleAddChapter}>
-                    + Add Chapter
-                  </button>
-                </div>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                  {(storyForm.chapters || []).map((ch, idx) => (
-                    <div key={idx} style={{ background: "#121728", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "12px", padding: "16px" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-                        <span style={{ fontSize: "14px", fontWeight: "700", color: "#7c5cff" }}>Chapter {ch.number || idx + 1}: {ch.title}</span>
-                        <button type="button" className="cpanel-btn cpanel-btn-danger" style={{ padding: "3px 8px", fontSize: "11px" }} onClick={() => handleRemoveChapter(idx)}>
-                          Remove
-                        </button>
-                      </div>
-
-                      <div className="cpanel-form-grid">
-                        <div className="cpanel-input-group">
-                          <label>Chapter Number</label>
-                          <input className="cpanel-input" value={ch.number || ""} onChange={e => handleChapterChange(idx, "number", e.target.value)} />
-                        </div>
-                        <div className="cpanel-input-group">
-                          <label>Badge Tag</label>
-                          <input className="cpanel-input" value={ch.badge || ""} onChange={e => handleChapterChange(idx, "badge", e.target.value)} />
-                        </div>
-                        <div className="cpanel-input-group">
-                          <label>Chapter Title</label>
-                          <input className="cpanel-input" value={ch.title || ""} onChange={e => handleChapterChange(idx, "title", e.target.value)} />
-                        </div>
-                        <div className="cpanel-input-group">
-                          <label>Subtitle</label>
-                          <input className="cpanel-input" value={ch.subtitle || ""} onChange={e => handleChapterChange(idx, "subtitle", e.target.value)} />
-                        </div>
-                        <div className="cpanel-input-group cpanel-form-full">
-                          <label>Narrative Description</label>
-                          <textarea className="cpanel-input cpanel-textarea" style={{ minHeight: "90px" }} value={ch.narrative || ""} onChange={e => handleChapterChange(idx, "narrative", e.target.value)} />
-                        </div>
-                        <div className="cpanel-input-group cpanel-form-full">
-                          <label>Highlight Quote</label>
-                          <input className="cpanel-input" value={ch.quote || ""} onChange={e => handleChapterChange(idx, "quote", e.target.value)} />
-                        </div>
-                        <div className="cpanel-input-group cpanel-form-full">
-                          <label>Key Takeaways (comma separated)</label>
-                          <input
-                            className="cpanel-input"
-                            value={Array.isArray(ch.takeaways) ? ch.takeaways.join(", ") : (ch.takeaways || "")}
-                            onChange={e => handleChapterChange(idx, "takeaways", e.target.value.split(",").map(t => t.trim()).filter(Boolean))}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <button type="submit" className="cpanel-btn cpanel-btn-primary">Save Career Story</button>
             </form>
           )}
 
@@ -1903,15 +1817,6 @@ const Hero = ({ theme }) => {
             <a href="#projects" className="btn btn-primary">
               <Icon name="briefcase" size={15} /> View My Work
             </a>
-            <a
-              href={hero.resumeUrl || "#"}
-              download={`${(hero.firstName || "Mohamed").trim()}_Resume`}
-              className="btn btn-outline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Icon name="download" size={15} /> Download Resume
-            </a>
             <a href="#contact" className="btn btn-outline">
               <Icon name="paperplane" size={15} /> Contact Me
             </a>
@@ -1990,125 +1895,8 @@ const AboutPortrait = ({ avatarUrl }) => {
           className="about-portrait-img"
           loading="lazy"
           onError={() => setImgFailed(true)}
-        />
-      ) : (
-        <AvatarSilhouette />
-      )}
-    </div>
-  );
-};
-
-/* ---------------- Full Story Modal ---------------- */
-const StoryModal = ({ story, onClose }) => {
-  const [activeChapter, setActiveChapter] = useState(0);
-  const storyData = story ? (Array.isArray(story) ? { subtitle: "A timeline of growth, milestones, and technical achievements.", chapters: story } : story) : { subtitle: "", chapters: [] };
-  const chapters = storyData.chapters || [];
-  const current = chapters[activeChapter] || chapters[0] || {};
-
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    document.body.style.overflow = "hidden";
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "auto";
-    };
-  }, [onClose]);
-
-  if (!chapters.length) return null;
-
-  return (
-    <div className="story-modal-overlay" onClick={onClose}>
-      <div className="story-modal-container" onClick={(e) => e.stopPropagation()}>
-        {/* Sidebar Chapter Nav */}
-        <div className="story-sidebar">
-          <div className="story-sidebar-header">
-            <div className="story-badge">CAREER JOURNEY</div>
-            <div className="story-sidebar-title">My Full Story</div>
-            <p className="story-sidebar-desc">{storyData.subtitle || "A timeline of growth, milestones, and technical achievements."}</p>
-          </div>
-
-          <div className="story-chapter-list">
-            {chapters.map((ch, idx) => (
-              <button
-                key={ch.id || idx}
-                className={`story-chapter-item ${idx === activeChapter ? "active" : ""}`}
-                onClick={() => setActiveChapter(idx)}
-              >
-                <span className="story-chapter-num">Chapter {ch.number || idx + 1}</span>
-                <span className="story-chapter-name">{ch.title}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Main Content Area */}
-        <div className="story-main-content">
-          <button className="story-modal-close" onClick={onClose} aria-label="Close story modal">
-            ✕
-          </button>
-
-          <div className="story-content-header">
-            <span className="story-content-badge">{current.badge || "Milestone"}</span>
-            <h2 className="story-content-title">{current.title}</h2>
-            <h3 className="story-content-subtitle">{current.subtitle}</h3>
-          </div>
-
-          <div className="story-content-body">
-            <p className="story-narrative-text">{current.narrative}</p>
-
-            {current.quote && (
-              <blockquote className="story-quote-card">
-                <span className="story-quote-mark">“</span>
-                <p>{current.quote}</p>
-              </blockquote>
-            )}
-
-            {current.takeaways && current.takeaways.length > 0 && (
-              <div className="story-takeaways-box">
-                <div className="story-takeaways-title">Key Takeaways & Impact</div>
-                <ul className="story-takeaways-list">
-                  {current.takeaways.map((item, idx) => (
-                    <li key={idx}>
-                      <span className="story-takeaway-bullet">✓</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-
-          {/* Footer Controls */}
-          <div className="story-modal-footer">
-            <button
-              className="story-nav-btn"
-              disabled={activeChapter === 0}
-              onClick={() => setActiveChapter((prev) => Math.max(0, prev - 1))}
-            >
-              ← Previous Chapter
-            </button>
-            <span style={{ fontSize: "13px", color: "rgba(255, 255, 255, 0.4)", fontFamily: "'JetBrains Mono', monospace" }}>
-              {activeChapter + 1} of {chapters.length}
-            </span>
-            <button
-              className="story-nav-btn"
-              disabled={activeChapter === chapters.length - 1}
-              onClick={() => setActiveChapter((prev) => Math.min(chapters.length - 1, prev + 1))}
-            >
-              Next Chapter →
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-/* ---------------- About ---------------- */
-const About = ({ onOpenStory }) => {
+ /* ---------------- About ---------------- */
+const About = () => {
   const { data } = useContext(PortfolioContext);
   const about = data.about || {};
   const strengths = about.strengths || [];
@@ -2199,15 +1987,6 @@ const About = ({ onOpenStory }) => {
                 </div>
               </div>
             )}
-
-            <div className="about-ctas">
-              <button className="btn btn-primary" onClick={onOpenStory}>
-                Full Story <Icon name="arrow" size={15} />
-              </button>
-              <a href={about.resumeUrl || "#"} className="btn btn-outline" target="_blank" rel="noopener noreferrer">
-                <Icon name="download" size={15} /> Download CV
-              </a>
-            </div>
           </Reveal>
         </div>
       </div>
@@ -2448,18 +2227,6 @@ const CertCard = ({ c, i }) => (
       ))}
     </div>
     
-    <a 
-      href={c.imageUrl || c.link || "#"} 
-      target="_blank" 
-      rel="noopener noreferrer" 
-      className="cert-action-button" 
-      onClick={(e) => { 
-        if (!c.imageUrl && (!c.link || c.link === "#")) e.preventDefault(); 
-      }}
-    >
-      <Icon name="external" size={15} />
-      {c.imageUrl ? "View Certificate Photo" : "Open Certificate"}
-    </a>
   </Reveal>
 );
 
@@ -2977,7 +2744,6 @@ const SECTION_IDS = ["home", "about", "skills", "experience", "certificates", "p
 function App() {
   const [portfolioData, setPortfolioData] = useState(DEFAULT_PORTFOLIO_DATA);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
-  const [isStoryOpen, setIsStoryOpen] = useState(false);
   const [theme, setTheme] = useState("dark");
   const [active, setActive] = useState("home");
   const [toast, setToast] = useState({ show: false, msg: "" });
@@ -3130,7 +2896,7 @@ function App() {
       <CustomCursor />
       <Nav theme={theme} toggleTheme={toggleTheme} active={active} />
       <Hero theme={theme} />
-      <About onOpenStory={() => setIsStoryOpen(true)} />
+      <About />
       <Skills />
       <Timeline />
       <Certificates />
@@ -3142,7 +2908,6 @@ function App() {
       <div className={`toast ${toast.show ? "show" : ""}`}>
         <Icon name="dot" size={10} /> {toast.msg}
       </div>
-      {isStoryOpen && <StoryModal story={portfolioData.story} onClose={() => setIsStoryOpen(false)} />}
       {isAdminOpen && <AdminPanel onClose={() => setIsAdminOpen(false)} showToast={showToast} />}
     </PortfolioContext.Provider>
   );

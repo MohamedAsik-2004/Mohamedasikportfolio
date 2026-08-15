@@ -62,10 +62,8 @@ const DEFAULT_DATA = {
   hero: { firstName: "Mohamed Asik", lastName: "K", role: "Flutter Developer", availability: "Open to Opportunities", bio: "I craft stunning mobile & web experiences with Flutter, Dart & modern backend integrations.", resumeUrl: "#", avatarUrl: "", socials: { github: "#", linkedin: "#", instagram: "#", twitter: "#" } },
   about: { name: "MOHAMED ASIK K", location: "Chennai, Tamil Nadu, India", email: "mohamedasik.in@gmail.com", phone: "+91 63825 55230", experience: "Fresher / Mobile Specialist", status: "Available for Full-time Roles & Projects", headline: "Architecting Scalable Mobile Applications with Flutter & Clean Architecture", bio: "Passionate Flutter Developer with hands-on expertise building responsive, high-performance cross-platform mobile apps for iOS and Android.", summary: "Building native-performing iOS & Android mobile apps.", philosophy: "Declarative UI, Clean Architecture, and Uncompromising User Experience.", strengths: ["Flutter & Dart Mastery", "Clean Architecture", "REST API & Firebase", "Pixel-Perfect UI/UX"], resumeUrl: "#", avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=600&h=800&q=80" },
   contact: { email: "mohamedasik.in@gmail.com", phone: "+91 63825 55230", location: "Chennai, Tamil Nadu, India", whatsappUrl: "https://wa.me/916382555230" },
-  story: { subtitle: "A career narrative driven by curiosity, mobile engineering, and clean architecture.", chapters: [] },
   academic: [],
   experience: [],
-  currentlyBuilding: [],
   skills: { frontend: [], backend: [] },
   certificates: [],
   projects: []
@@ -83,10 +81,8 @@ const AdminApp = () => {
   const [heroForm, setHeroForm] = React.useState({ ...DEFAULT_DATA.hero });
   const [aboutForm, setAboutForm] = React.useState({ ...DEFAULT_DATA.about });
   const [contactForm, setContactForm] = React.useState({ ...DEFAULT_DATA.contact });
-  const [storyForm, setStoryForm] = React.useState({ ...DEFAULT_DATA.story });
   const [academicList, setAcademicList] = React.useState([]);
   const [experienceList, setExperienceList] = React.useState([]);
-  const [currentlyBuildingList, setCurrentlyBuildingList] = React.useState([]);
   const [skillsList, setSkillsList] = React.useState({ frontend: [], backend: [] });
   const [certsList, setCertsList] = React.useState([]);
   const [projectsList, setProjectsList] = React.useState([]);
@@ -107,10 +103,8 @@ const AdminApp = () => {
         if (fetchedData.hero) setHeroForm({ ...fetchedData.hero });
         if (fetchedData.about) setAboutForm({ ...fetchedData.about });
         if (fetchedData.contact) setContactForm({ ...fetchedData.contact });
-        if (fetchedData.story) setStoryForm({ ...fetchedData.story });
         if (fetchedData.academic) setAcademicList(JSON.parse(JSON.stringify(fetchedData.academic)));
         if (fetchedData.experience) setExperienceList(JSON.parse(JSON.stringify(fetchedData.experience)));
-        if (fetchedData.currentlyBuilding) setCurrentlyBuildingList(JSON.parse(JSON.stringify(fetchedData.currentlyBuilding)));
         if (fetchedData.skills) setSkillsList(JSON.parse(JSON.stringify(fetchedData.skills)));
         if (fetchedData.certificates) setCertsList(JSON.parse(JSON.stringify(fetchedData.certificates)));
         if (fetchedData.projects) setProjectsList(JSON.parse(JSON.stringify(fetchedData.projects)));
@@ -271,13 +265,11 @@ const AdminApp = () => {
         <div className="cpanel-sidebar">
           <button className={`cpanel-sidebar-item ${activeTab==="overview"?"active":""}`} onClick={()=>setActiveTab("overview")}>📊 Overview</button>
           <button className={`cpanel-sidebar-item ${activeTab==="hero"?"active":""}`} onClick={()=>setActiveTab("hero")}>👤 Hero & About</button>
-          <button className={`cpanel-sidebar-item ${activeTab==="story"?"active":""}`} onClick={()=>setActiveTab("story")}>📖 Full Story</button>
           <button className={`cpanel-sidebar-item ${activeTab==="academic"?"active":""}`} onClick={()=>setActiveTab("academic")}>🎓 Academic</button>
           <button className={`cpanel-sidebar-item ${activeTab==="experience"?"active":""}`} onClick={()=>setActiveTab("experience")}>💼 Experience</button>
           <button className={`cpanel-sidebar-item ${activeTab==="skills"?"active":""}`} onClick={()=>setActiveTab("skills")}>⚡ Skills ({totalSkills})</button>
           <button className={`cpanel-sidebar-item ${activeTab==="projects"?"active":""}`} onClick={()=>setActiveTab("projects")}>📂 Projects ({projectsList.length})</button>
           <button className={`cpanel-sidebar-item ${activeTab==="certs"?"active":""}`} onClick={()=>setActiveTab("certs")}>🥇 Certificates ({certsList.length})</button>
-          <button className={`cpanel-sidebar-item ${activeTab==="wip"?"active":""}`} onClick={()=>setActiveTab("wip")}>🛠️ Building ({currentlyBuildingList.length})</button>
           <button className={`cpanel-sidebar-item ${activeTab==="motion"?"active":""}`} onClick={()=>setActiveTab("motion")}>✨ Motion FX</button>
           <button className={`cpanel-sidebar-item ${activeTab==="leads"?"active":""}`} onClick={()=>setActiveTab("leads")}>📥 Leads ({leadsList.length})</button>
         </div>
@@ -342,42 +334,45 @@ const AdminApp = () => {
                   </div>
                 </div>
               </div>
-              <button type="submit" className="cpanel-btn cpanel-btn-primary">Save Hero & About Settings</button>
-            </form>
-          )}
 
-          {/* FULL STORY */}
-          {activeTab === "story" && (
-            <form onSubmit={(e) => { e.preventDefault(); saveConfig({ ...data, story: storyForm }); }}>
               <div className="cpanel-card">
-                <div className="cpanel-card-title">Career Narrative & Story Chapters</div>
-                <div className="cpanel-input-group cpanel-form-full" style={{ marginBottom: "20px" }}>
-                  <label>Story Subtitle</label>
-                  <input className="cpanel-input" value={storyForm.subtitle || ""} onChange={e => setStoryForm({ ...storyForm, subtitle: e.target.value })} />
-                </div>
-                {(storyForm.chapters || []).map((ch, idx) => (
-                  <div key={idx} style={{ border: "1px solid rgba(255,255,255,0.08)", padding: "16px", borderRadius: "12px", background: "rgba(255,255,255,0.02)", marginBottom: "16px" }}>
-                    <div style={{ display: "grid", gridTemplateColumns: "60px 1fr 1fr", gap: "10px", marginBottom: "10px" }}>
-                      <input className="cpanel-input" value={ch.number || "01"} onChange={e => { const next = [...storyForm.chapters]; next[idx].number = e.target.value; setStoryForm({ ...storyForm, chapters: next }); }} placeholder="No"/>
-                      <input className="cpanel-input" value={ch.title || ""} onChange={e => { const next = [...storyForm.chapters]; next[idx].title = e.target.value; setStoryForm({ ...storyForm, chapters: next }); }} placeholder="Chapter Title"/>
-                      <input className="cpanel-input" value={ch.badge || ""} onChange={e => { const next = [...storyForm.chapters]; next[idx].badge = e.target.value; setStoryForm({ ...storyForm, chapters: next }); }} placeholder="Badge Tag"/>
-                    </div>
-                    <div className="cpanel-input-group" style={{ marginBottom: "10px" }}>
-                      <label>Narrative Content</label>
-                      <textarea className="cpanel-input cpanel-textarea" value={ch.narrative || ""} onChange={e => { const next = [...storyForm.chapters]; next[idx].narrative = e.target.value; setStoryForm({ ...storyForm, chapters: next }); }} />
-                    </div>
-                    <button type="button" className="cpanel-btn cpanel-btn-danger" style={{ fontSize: "11px", padding: "4px 8px" }} onClick={() => {
-                      const next = [...storyForm.chapters]; next.splice(idx, 1); setStoryForm({ ...storyForm, chapters: next });
-                    }}>Delete Chapter</button>
+                <div className="cpanel-card-title">About Me Details</div>
+                <div className="cpanel-form-grid">
+                  <div className="cpanel-input-group"><label>Display Name</label><input className="cpanel-input" value={aboutForm.name || ""} onChange={e=>setAboutForm({...aboutForm, name:e.target.value})}/></div>
+                  <div className="cpanel-input-group"><label>Experience Text</label><input className="cpanel-input" value={aboutForm.experience || ""} onChange={e=>setAboutForm({...aboutForm, experience:e.target.value})}/></div>
+                  <div className="cpanel-input-group"><label>Email Address</label><input className="cpanel-input" value={aboutForm.email || ""} onChange={e=>setAboutForm({...aboutForm, email:e.target.value})}/></div>
+                  <div className="cpanel-input-group"><label>Phone Number</label><input className="cpanel-input" value={aboutForm.phone || ""} onChange={e=>setAboutForm({...aboutForm, phone:e.target.value})}/></div>
+                  <div className="cpanel-input-group"><label>Location</label><input className="cpanel-input" value={aboutForm.location || ""} onChange={e=>setAboutForm({...aboutForm, location:e.target.value})}/></div>
+                  <div className="cpanel-input-group"><label>Status Badge</label><input className="cpanel-input" value={aboutForm.status || ""} onChange={e=>setAboutForm({...aboutForm, status:e.target.value})}/></div>
+                  <div className="cpanel-input-group cpanel-form-full"><label>Headline</label><input className="cpanel-input" value={aboutForm.headline || ""} onChange={e=>setAboutForm({...aboutForm, headline:e.target.value})}/></div>
+                  <div className="cpanel-input-group cpanel-form-full"><label>Summary Subtitle</label><input className="cpanel-input" value={aboutForm.summary || ""} onChange={e=>setAboutForm({...aboutForm, summary:e.target.value})}/></div>
+                  <div className="cpanel-input-group cpanel-form-full"><label>About Bio Description</label><textarea className="cpanel-input cpanel-textarea" value={aboutForm.bio || ""} onChange={e=>setAboutForm({...aboutForm, bio:e.target.value})}/></div>
+                  <div className="cpanel-input-group cpanel-form-full"><label>Development Philosophy</label><input className="cpanel-input" value={aboutForm.philosophy || ""} onChange={e=>setAboutForm({...aboutForm, philosophy:e.target.value})}/></div>
+                  <div className="cpanel-input-group cpanel-form-full">
+                    <label>Core Strengths (comma separated)</label>
+                    <input
+                      className="cpanel-input"
+                      value={Array.isArray(aboutForm.strengths) ? aboutForm.strengths.join(", ") : (aboutForm.strengths || "")}
+                      onChange={e=>setAboutForm({...aboutForm, strengths: e.target.value.split(",").map(s => s.trim()).filter(Boolean)})}
+                    />
                   </div>
-                ))}
-                <button type="button" className="cpanel-btn cpanel-btn-outline" style={{ marginBottom: "20px" }} onClick={() => {
-                  const next = [...(storyForm.chapters || [])];
-                  next.push({ id: `ch_${Date.now()}`, number: `0${next.length + 1}`, title: "New Chapter", badge: "Milestone", narrative: "", takeaways: [] });
-                  setStoryForm({ ...storyForm, chapters: next });
-                }}>+ Add Chapter</button>
+                </div>
               </div>
-              <button type="submit" className="cpanel-btn cpanel-btn-primary">Save Story Chapters</button>
+
+              <div className="cpanel-card">
+                <div className="cpanel-card-title">Social Profiles & Contact Info</div>
+                <div className="cpanel-form-grid">
+                  <div className="cpanel-input-group"><label>GitHub URL</label><input className="cpanel-input" value={(heroForm.socials && heroForm.socials.github) || ""} onChange={e=>setHeroForm({...heroForm, socials:{...(heroForm.socials || {}), github:e.target.value}})}/></div>
+                  <div className="cpanel-input-group"><label>LinkedIn URL</label><input className="cpanel-input" value={(heroForm.socials && heroForm.socials.linkedin) || ""} onChange={e=>setHeroForm({...heroForm, socials:{...(heroForm.socials || {}), linkedin:e.target.value}})}/></div>
+                  <div className="cpanel-input-group"><label>Instagram URL</label><input className="cpanel-input" value={(heroForm.socials && heroForm.socials.instagram) || ""} onChange={e=>setHeroForm({...heroForm, socials:{...(heroForm.socials || {}), instagram:e.target.value}})}/></div>
+                  <div className="cpanel-input-group"><label>Twitter URL</label><input className="cpanel-input" value={(heroForm.socials && heroForm.socials.twitter) || ""} onChange={e=>setHeroForm({...heroForm, socials:{...(heroForm.socials || {}), twitter:e.target.value}})}/></div>
+                  <div className="cpanel-input-group"><label>WhatsApp URL</label><input className="cpanel-input" value={contactForm.whatsappUrl || ""} onChange={e=>setContactForm({...contactForm, whatsappUrl:e.target.value})}/></div>
+                  <div className="cpanel-input-group"><label>Contact Email</label><input className="cpanel-input" value={contactForm.email || ""} onChange={e=>setContactForm({...contactForm, email:e.target.value})}/></div>
+                  <div className="cpanel-input-group"><label>Contact Phone</label><input className="cpanel-input" value={contactForm.phone || ""} onChange={e=>setContactForm({...contactForm, phone:e.target.value})}/></div>
+                </div>
+              </div>
+
+              <button type="submit" className="cpanel-btn cpanel-btn-primary">Save Hero, About & Social Settings</button>
             </form>
           )}
 
@@ -498,26 +493,6 @@ const AdminApp = () => {
                 </div>
               ))}
               <button className="cpanel-btn cpanel-btn-primary" onClick={() => saveConfig({ ...data, certificates: certsList })}>Save Certificates</button>
-            </div>
-          )}
-
-          {/* CURRENTLY BUILDING */}
-          {activeTab === "wip" && (
-            <div className="cpanel-card">
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "16px" }}>
-                <div className="cpanel-card-title" style={{ marginBottom: 0 }}>Currently Building WIP</div>
-                <button className="cpanel-btn cpanel-btn-outline" onClick={() => setCurrentlyBuildingList([...currentlyBuildingList, { id: `cb_${Date.now()}`, projectName: "New App", status: "In Development", progress: 75, description: "", expectedCompletion: "Q3 2026", published: true }])}>+ Add WIP Project</button>
-              </div>
-              {currentlyBuildingList.map((item, idx) => (
-                <div key={idx} style={{ border: "1px solid rgba(255,255,255,0.08)", padding: "16px", borderRadius: "12px", background: "rgba(255,255,255,0.02)", marginBottom: "12px" }}>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 100px", gap: "10px", marginBottom: "10px" }}>
-                    <input className="cpanel-input" value={item.projectName} onChange={e => { const next = [...currentlyBuildingList]; next[idx].projectName = e.target.value; setCurrentlyBuildingList(next); }} placeholder="Project Name"/>
-                    <input type="number" className="cpanel-input" value={item.progress} onChange={e => { const next = [...currentlyBuildingList]; next[idx].progress = parseInt(e.target.value) || 0; setCurrentlyBuildingList(next); }} placeholder="Progress %"/>
-                  </div>
-                  <button className="cpanel-btn cpanel-btn-danger" style={{ fontSize: "11px", padding: "4px 8px" }} onClick={() => { const next = [...currentlyBuildingList]; next.splice(idx, 1); setCurrentlyBuildingList(next); }}>Remove</button>
-                </div>
-              ))}
-              <button className="cpanel-btn cpanel-btn-primary" onClick={() => saveConfig({ ...data, currentlyBuilding: currentlyBuildingList })}>Save WIP Projects</button>
             </div>
           )}
 
