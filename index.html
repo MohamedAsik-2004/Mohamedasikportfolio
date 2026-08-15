@@ -1884,7 +1884,6 @@ const Hero = ({ theme }) => {
   );
 };
 
-/* ---------------- About ---------------- */
 const AboutPortrait = ({ avatarUrl }) => {
   const [imgFailed, setImgFailed] = useState(false);
   return (
@@ -1896,7 +1895,15 @@ const AboutPortrait = ({ avatarUrl }) => {
           className="about-portrait-img"
           loading="lazy"
           onError={() => setImgFailed(true)}
- /* ---------------- About ---------------- */
+        />
+      ) : (
+        <AvatarSilhouette />
+      )}
+    </div>
+  );
+};
+
+/* ---------------- About ---------------- */
 const About = () => {
   const { data } = useContext(PortfolioContext);
   const about = data.about || {};
