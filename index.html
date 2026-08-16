@@ -2768,6 +2768,14 @@ function App() {
   const [toast, setToast] = useState({ show: false, msg: "" });
 
   useEffect(() => {
+    // 0. Increment Visitor Counter once per browser session
+    try {
+      if (!sessionStorage.getItem("portfolio_visited")) {
+        sessionStorage.setItem("portfolio_visited", "true");
+        fetch(`${API_BASE}/api/visitors/increment`, { method: "POST" }).catch(() => {});
+      }
+    } catch(e) {}
+
     // 1. Load cached data from localStorage immediately for instant 0ms load
     try {
       const cached = localStorage.getItem("portfolio_data");

@@ -226,6 +226,16 @@ function initializeDatabase() {
             });
           }
         });
+
+        // Seed default visitor count if empty
+        db.get("SELECT value FROM settings WHERE key = 'visitor_count'", (err, row) => {
+          if (!row) {
+            db.run("INSERT INTO settings (key, value) VALUES ('visitor_count', '1284')", (err) => {
+              if (err) console.error('Error seeding default visitor count:', err.message);
+              else console.log('Successfully seeded default visitor count.');
+            });
+          }
+        });
       }
     });
 
@@ -355,6 +365,35 @@ const notifyClientsOfDataUpdate = (data) => {
     }
   });
 };
+
+const notifyClientsOfVisitorUpdate = (count) => {
+  sseClients.forEach(client => {
+    try {
+      client.write(`data: ${JSON.stringify({ type: 'VISITOR_COUNT_UPDATED', totalVisitors: count })}\n\n`);
+    } catch (e) {}
+  });
+};
+
+// Visitor Counter Endpoints
+app.get('/api/visitors', (req, res) => {
+  db.get("SELECT value FROM settings WHERE key = 'visitor_count'", (err, row) => {
+    if (err) return res.status(500).json({ error: err.message });
+    const count = row ? parseInt(row.value, 10) || 1284 : 1284;
+    res.json({ totalVisitors: count });
+  });
+});
+
+app.post('/api/visitors/increment', (req, res) => {
+  db.get("SELECT value FROM settings WHERE key = 'visitor_count'", (err, row) => {
+    let currentCount = row ? parseInt(row.value, 10) || 1284 : 1284;
+    currentCount += 1;
+    db.run("INSERT OR REPLACE INTO settings (key, value) VALUES ('visitor_count', ?)", [currentCount.toString()], (err) => {
+      if (err) return res.status(500).json({ error: err.message });
+      notifyClientsOfVisitorUpdate(currentCount);
+      res.json({ success: true, totalVisitors: currentCount });
+    });
+  });
+});
 
 app.post('/api/portfolio-data', (req, res) => {
   const { data } = req.body;

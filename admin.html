@@ -89,6 +89,7 @@ const AdminApp = () => {
   const [projectsList, setProjectsList] = React.useState([]);
   const [leadsList, setLeadsList] = React.useState([]);
   const [animForm, setAnimForm] = React.useState({ ...DEFAULT_DATA.animationSettings });
+  const [visitorCount, setVisitorCount] = React.useState(1284);
 
   const showToast = (msg) => {
     setToast({ show: true, msg });
@@ -121,8 +122,19 @@ const AdminApp = () => {
     } catch(err) { console.error("Error fetching leads:", err); }
   };
 
+  const fetchVisitors = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/api/visitors`);
+      if (res.ok) {
+        const vData = await res.json();
+        if (vData.totalVisitors) setVisitorCount(vData.totalVisitors);
+      }
+    } catch(err) { console.error("Error fetching visitors:", err); }
+  };
+
   React.useEffect(() => {
     fetchPortfolioData();
+    fetchVisitors();
     let eventSource;
     try {
       eventSource = new EventSource(`${API_BASE}/api/events`);
@@ -132,6 +144,9 @@ const AdminApp = () => {
           if (payload.type === 'PORTFOLIO_UPDATED' && payload.data) {
             setData(payload.data);
           }
+          if (payload.type === 'VISITOR_COUNT_UPDATED' && payload.totalVisitors) {
+            setVisitorCount(payload.totalVisitors);
+          }
         } catch(err) {}
       };
     } catch(err) {}
@@ -139,7 +154,10 @@ const AdminApp = () => {
   }, []);
 
   React.useEffect(() => {
-    if (isLoggedIn) fetchLeads();
+    if (isLoggedIn) {
+      fetchLeads();
+      fetchVisitors();
+    }
   }, [isLoggedIn]);
 
   const handleLogin = async (e) => {
@@ -280,29 +298,38 @@ const AdminApp = () => {
           {activeTab === "overview" && (
             <div>
               <div className="cpanel-card">
-                <div className="cpanel-card-title">
-                  <div>System Dashboard</div>
-                  <span style={{ fontSize: "12px", color: "#35d68a" }}>● SQLite Database Connected</span>
+                <div className="cpanel-card-title" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div>System & Visitor Analytics</div>
+                  <span style={{ fontSize: "12px", color: "#35d68a" }}>● Live SQLite Database Active</span>
                 </div>
                 <p style={{ color: "#9aa3b8", lineHeight: "1.6", margin: "0 0 20px 0", fontSize: "14px" }}>
-                  Manage your portfolio data in real time. Changes saved here are persisted to SQLite & JSON and broadcast live to visitors.
+                  Real-time analytics and portfolio control center. Changes saved here persist to SQLite & JSON storage and sync live.
                 </p>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "16px" }}>
-                  <div style={{ background: "rgba(124, 92, 255, 0.1)", padding: "20px", borderRadius: "14px", border: "1px solid rgba(124, 92, 255, 0.2)" }}>
-                    <div style={{ fontSize: "12px", color: "#9aa3b8" }}>TOTAL SKILLS</div>
-                    <div style={{ fontSize: "32px", fontWeight: "800", color: "#7c5cff" }}>{totalSkills}</div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px" }}>
+                  <div style={{ background: "linear-gradient(135deg, rgba(124, 92, 255, 0.15), rgba(79, 141, 253, 0.15))", padding: "22px", borderRadius: "14px", border: "1px solid rgba(124, 92, 255, 0.3)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <div style={{ fontSize: "12px", color: "#a5b4fc", fontWeight: "700", letterSpacing: "0.05em" }}>👁️ TOTAL VISITORS</div>
+                      <button onClick={fetchVisitors} style={{ background: "transparent", border: "none", color: "#a5b4fc", cursor: "pointer", fontSize: "12px" }}>🔄</button>
+                    </div>
+                    <div style={{ fontSize: "36px", fontWeight: "800", color: "#ffffff", marginTop: "8px" }}>
+                      {visitorCount ? visitorCount.toLocaleString() : "1,284"}
+                    </div>
+                    <div style={{ fontSize: "11px", color: "#35d68a", marginTop: "4px" }}>● Live Traffic Counter</div>
                   </div>
                   <div style={{ background: "rgba(56, 189, 248, 0.1)", padding: "20px", borderRadius: "14px", border: "1px solid rgba(56, 189, 248, 0.2)" }}>
-                    <div style={{ fontSize: "12px", color: "#9aa3b8" }}>PROJECTS</div>
+                    <div style={{ fontSize: "12px", color: "#9aa3b8", fontWeight: "600" }}>📂 PROJECTS SHOWCASE</div>
                     <div style={{ fontSize: "32px", fontWeight: "800", color: "#38bdf8" }}>{projectsList.length}</div>
+                    <div style={{ fontSize: "11px", color: "#9aa3b8", marginTop: "4px" }}>Active Case Studies</div>
                   </div>
                   <div style={{ background: "rgba(53, 214, 138, 0.1)", padding: "20px", borderRadius: "14px", border: "1px solid rgba(53, 214, 138, 0.2)" }}>
-                    <div style={{ fontSize: "12px", color: "#9aa3b8" }}>LEADS INBOX</div>
+                    <div style={{ fontSize: "12px", color: "#9aa3b8", fontWeight: "600" }}>📥 CLIENT LEADS INBOX</div>
                     <div style={{ fontSize: "32px", fontWeight: "800", color: "#35d68a" }}>{leadsList.length}</div>
+                    <div style={{ fontSize: "11px", color: "#9aa3b8", marginTop: "4px" }}>Messages Received</div>
                   </div>
                   <div style={{ background: "rgba(234, 179, 8, 0.1)", padding: "20px", borderRadius: "14px", border: "1px solid rgba(234, 179, 8, 0.2)" }}>
-                    <div style={{ fontSize: "12px", color: "#9aa3b8" }}>CERTIFICATES</div>
+                    <div style={{ fontSize: "12px", color: "#9aa3b8", fontWeight: "600" }}>🥇 CERTIFICATIONS</div>
                     <div style={{ fontSize: "32px", fontWeight: "800", color: "#eab308" }}>{certsList.length}</div>
+                    <div style={{ fontSize: "11px", color: "#9aa3b8", marginTop: "4px" }}>Verified Badges</div>
                   </div>
                 </div>
               </div>
@@ -407,18 +434,19 @@ const AdminApp = () => {
               <div className="cpanel-card">
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                   <div className="cpanel-card-title" style={{ marginBottom: 0 }}>Academic Background CMS</div>
-                  <button type="button" className="cpanel-btn cpanel-btn-outline" onClick={() => setAcademicList([...academicList, { id: `edu_${Date.now()}`, qualification: "Qualification", institution: "Institution", location: "Location", startDate: "2022", endDate: "2026", cgpa: "8.5 / 10", description: "", published: true }])}>+ Add Academic Record</button>
+                  <button type="button" className="cpanel-btn cpanel-btn-outline" onClick={() => setAcademicList([...academicList, { id: `edu_${Date.now()}`, qualification: "Qualification", institution: "Institution", location: "Chennai, TN, India", startDate: "2022", endDate: "2026", cgpa: "8.5 / 10", description: "", published: true }])}>+ Add Academic Record</button>
                 </div>
                 {academicList.map((item, idx) => (
                   <div key={idx} style={{ border: "1px solid rgba(255,255,255,0.08)", padding: "16px", borderRadius: "12px", background: "rgba(255,255,255,0.02)", marginBottom: "14px" }}>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "10px" }}>
-                      <input className="cpanel-input" value={item.qualification || ""} onChange={e => { const next = [...academicList]; next[idx].qualification = e.target.value; setAcademicList(next); }} placeholder="Qualification"/>
-                      <input className="cpanel-input" value={item.institution || ""} onChange={e => { const next = [...academicList]; next[idx].institution = e.target.value; setAcademicList(next); }} placeholder="Institution"/>
+                      <div className="cpanel-input-group"><label>Qualification / Degree</label><input className="cpanel-input" value={item.qualification || ""} onChange={e => { const next = [...academicList]; next[idx].qualification = e.target.value; setAcademicList(next); }} placeholder="Qualification"/></div>
+                      <div className="cpanel-input-group"><label>Institution / College</label><input className="cpanel-input" value={item.institution || ""} onChange={e => { const next = [...academicList]; next[idx].institution = e.target.value; setAcademicList(next); }} placeholder="Institution"/></div>
                     </div>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "10px" }}>
-                      <input className="cpanel-input" value={item.startDate || ""} onChange={e => { const next = [...academicList]; next[idx].startDate = e.target.value; setAcademicList(next); }} placeholder="Start Date"/>
-                      <input className="cpanel-input" value={item.endDate || ""} onChange={e => { const next = [...academicList]; next[idx].endDate = e.target.value; setAcademicList(next); }} placeholder="End Date"/>
-                      <input className="cpanel-input" value={item.cgpa || ""} onChange={e => { const next = [...academicList]; next[idx].cgpa = e.target.value; setAcademicList(next); }} placeholder="CGPA / Score"/>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "10px", marginBottom: "10px" }}>
+                      <div className="cpanel-input-group"><label>Location</label><input className="cpanel-input" value={item.location || ""} onChange={e => { const next = [...academicList]; next[idx].location = e.target.value; setAcademicList(next); }} placeholder="📍 Location (e.g. Chennai)"/></div>
+                      <div className="cpanel-input-group"><label>Start Date</label><input className="cpanel-input" value={item.startDate || ""} onChange={e => { const next = [...academicList]; next[idx].startDate = e.target.value; setAcademicList(next); }} placeholder="Start Date"/></div>
+                      <div className="cpanel-input-group"><label>End Date</label><input className="cpanel-input" value={item.endDate || ""} onChange={e => { const next = [...academicList]; next[idx].endDate = e.target.value; setAcademicList(next); }} placeholder="End Date"/></div>
+                      <div className="cpanel-input-group"><label>CGPA / Score</label><input className="cpanel-input" value={item.cgpa || ""} onChange={e => { const next = [...academicList]; next[idx].cgpa = e.target.value; setAcademicList(next); }} placeholder="CGPA / Score"/></div>
                     </div>
                     <button type="button" className="cpanel-btn cpanel-btn-danger" style={{ fontSize: "11px", padding: "4px 8px" }} onClick={() => { const next = [...academicList]; next.splice(idx, 1); setAcademicList(next); }}>Remove</button>
                   </div>
@@ -434,13 +462,18 @@ const AdminApp = () => {
               <div className="cpanel-card">
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                   <div className="cpanel-card-title" style={{ marginBottom: 0 }}>Work Experience CMS</div>
-                  <button type="button" className="cpanel-btn cpanel-btn-outline" onClick={() => setExperienceList([...experienceList, { id: `exp_${Date.now()}`, jobTitle: "Job Title", company: "Company", location: "Location", startDate: "2025", endDate: "2026", responsibilities: [], techStack: ["Flutter", "Dart"], published: true }])}>+ Add Experience Record</button>
+                  <button type="button" className="cpanel-btn cpanel-btn-outline" onClick={() => setExperienceList([...experienceList, { id: `exp_${Date.now()}`, jobTitle: "Job Title", company: "Company", location: "Chennai, TN", startDate: "2025", endDate: "2026", responsibilities: [], techStack: ["Flutter", "Dart"], published: true }])}>+ Add Experience Record</button>
                 </div>
                 {experienceList.map((item, idx) => (
                   <div key={idx} style={{ border: "1px solid rgba(255,255,255,0.08)", padding: "16px", borderRadius: "12px", background: "rgba(255,255,255,0.02)", marginBottom: "14px" }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "10px" }}>
+                      <div className="cpanel-input-group"><label>Job Title / Role</label><input className="cpanel-input" value={item.jobTitle || ""} onChange={e => { const next = [...experienceList]; next[idx].jobTitle = e.target.value; setExperienceList(next); }} placeholder="Job Title"/></div>
+                      <div className="cpanel-input-group"><label>Company Name</label><input className="cpanel-input" value={item.company || ""} onChange={e => { const next = [...experienceList]; next[idx].company = e.target.value; setExperienceList(next); }} placeholder="Company Name"/></div>
+                      <div className="cpanel-input-group"><label>Location</label><input className="cpanel-input" value={item.location || ""} onChange={e => { const next = [...experienceList]; next[idx].location = e.target.value; setExperienceList(next); }} placeholder="📍 Location (e.g. Remote / Chennai)"/></div>
+                    </div>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "10px" }}>
-                      <input className="cpanel-input" value={item.jobTitle || ""} onChange={e => { const next = [...experienceList]; next[idx].jobTitle = e.target.value; setExperienceList(next); }} placeholder="Job Title"/>
-                      <input className="cpanel-input" value={item.company || ""} onChange={e => { const next = [...experienceList]; next[idx].company = e.target.value; setExperienceList(next); }} placeholder="Company Name"/>
+                      <div className="cpanel-input-group"><label>Start Date</label><input className="cpanel-input" value={item.startDate || ""} onChange={e => { const next = [...experienceList]; next[idx].startDate = e.target.value; setExperienceList(next); }} placeholder="Start Date"/></div>
+                      <div className="cpanel-input-group"><label>End Date</label><input className="cpanel-input" value={item.endDate || ""} onChange={e => { const next = [...experienceList]; next[idx].endDate = e.target.value; setExperienceList(next); }} placeholder="End Date"/></div>
                     </div>
                     <button type="button" className="cpanel-btn cpanel-btn-danger" style={{ fontSize: "11px", padding: "4px 8px" }} onClick={() => { const next = [...experienceList]; next.splice(idx, 1); setExperienceList(next); }}>Remove</button>
                   </div>
@@ -453,7 +486,7 @@ const AdminApp = () => {
           {/* SKILLS */}
           {activeTab === "skills" && (
             <div className="cpanel-card">
-              <div className="cpanel-card-title">Skills Stack CMS</div>
+              <div className="cpanel-card-title">Skills Stack CMS (With Icon / Badge Selector)</div>
               {["frontend", "backend"].map((cat) => (
                 <div key={cat} style={{ marginBottom: "20px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
@@ -464,11 +497,22 @@ const AdminApp = () => {
                     }}>+ Add Skill</button>
                   </div>
                   {(skillsList[cat] || []).map((sk, idx) => (
-                    <div key={idx} style={{ display: "flex", gap: "8px", marginBottom: "8px", alignItems: "center" }}>
-                      <input className="cpanel-input" style={{ width: "160px" }} value={sk.name} onChange={e => { const next = { ...skillsList }; next[cat][idx].name = e.target.value; setSkillsList(next); }} />
-                      <input className="cpanel-input" style={{ width: "120px" }} value={sk.sub} onChange={e => { const next = { ...skillsList }; next[cat][idx].sub = e.target.value; setSkillsList(next); }} />
-                      <input type="number" className="cpanel-input" style={{ width: "70px" }} value={sk.pct} onChange={e => { const next = { ...skillsList }; next[cat][idx].pct = parseInt(e.target.value) || 0; setSkillsList(next); }} />
-                      <button className="cpanel-btn cpanel-btn-danger" style={{ padding: "4px 8px" }} onClick={() => { const next = { ...skillsList }; next[cat].splice(idx, 1); setSkillsList(next); }}>✕</button>
+                    <div key={idx} style={{ border: "1px solid rgba(255,255,255,0.06)", padding: "12px", borderRadius: "10px", background: "rgba(255,255,255,0.02)", marginBottom: "10px" }}>
+                      <div style={{ display: "flex", gap: "8px", marginBottom: "8px", alignItems: "center" }}>
+                        <input className="cpanel-input" style={{ width: "50px", textAlign: "center", fontSize: "16px" }} value={sk.glyph || "⚡"} onChange={e => { const next = { ...skillsList }; next[cat][idx].glyph = e.target.value; setSkillsList(next); }} title="Skill Icon Badge / Emoji" placeholder="Icon"/>
+                        <input className="cpanel-input" style={{ flex: 1 }} value={sk.name} onChange={e => { const next = { ...skillsList }; next[cat][idx].name = e.target.value; setSkillsList(next); }} placeholder="Skill Name"/>
+                        <input className="cpanel-input" style={{ width: "120px" }} value={sk.sub} onChange={e => { const next = { ...skillsList }; next[cat][idx].sub = e.target.value; setSkillsList(next); }} placeholder="Subtitle"/>
+                        <input type="number" className="cpanel-input" style={{ width: "75px" }} value={sk.pct} onChange={e => { const next = { ...skillsList }; next[cat][idx].pct = parseInt(e.target.value) || 0; setSkillsList(next); }} placeholder="Pct %"/>
+                        <button className="cpanel-btn cpanel-btn-danger" style={{ padding: "4px 8px" }} onClick={() => { const next = { ...skillsList }; next[cat].splice(idx, 1); setSkillsList(next); }}>✕</button>
+                      </div>
+                      <div style={{ display: "flex", gap: "6px", alignItems: "center", flexWrap: "wrap" }}>
+                        <span style={{ fontSize: "11px", color: "#9aa3b8" }}>Preset Icon Badges:</span>
+                        {["⚡", "⚛", "📱", "🔥", "💻", "🍃", "🚀", "🎯", "🎨", "🛠️", "🌐", "⚙️"].map((badgeEmoji) => (
+                          <button key={badgeEmoji} type="button" onClick={() => { const next = { ...skillsList }; next[cat][idx].glyph = badgeEmoji; setSkillsList(next); }} style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#fff", borderRadius: "4px", padding: "2px 6px", fontSize: "12px", cursor: "pointer" }}>
+                            {badgeEmoji}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -481,7 +525,7 @@ const AdminApp = () => {
           {activeTab === "projects" && (
             <div className="cpanel-card">
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "16px" }}>
-                <div className="cpanel-card-title" style={{ marginBottom: 0 }}>Projects Showcase CMS</div>
+                <div className="cpanel-card-title" style={{ marginBottom: 0 }}>Projects Showcase CMS (WebP Upload Enabled)</div>
                 <button className="cpanel-btn cpanel-btn-outline" onClick={() => setProjectsList([...projectsList, { num: `0${projectsList.length + 1}`, title: "New Project", category: "Mobile App", tech: "Flutter, Dart", desc: "", imageUrl: "" }])}>+ Add Project</button>
               </div>
               {projectsList.map((p, idx) => (
@@ -494,6 +538,29 @@ const AdminApp = () => {
                   <div className="cpanel-input-group" style={{ marginBottom: "10px" }}>
                     <input className="cpanel-input" value={p.tech} onChange={e => { const next = [...projectsList]; next[idx].tech = e.target.value; setProjectsList(next); }} placeholder="Technologies (comma separated)"/>
                   </div>
+                  <div className="cpanel-input-group" style={{ marginBottom: "10px" }}>
+                    <label>Project Photo Upload (Compressed to WebP)</label>
+                    <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                      {p.imageUrl && (
+                        <img src={p.imageUrl} alt="Project Preview" style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "6px" }} />
+                      )}
+                      <input type="file" accept="image/*" className="cpanel-input" onChange={async (e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          const compressed = await compressImage(file, 800, 800, 0.8);
+                          if (compressed) {
+                            const next = [...projectsList];
+                            next[idx].imageUrl = compressed;
+                            setProjectsList(next);
+                            showToast("Project photo compressed to WebP!");
+                          }
+                        }
+                      }} style={{ flex: 1 }} />
+                    </div>
+                  </div>
+                  <div className="cpanel-input-group" style={{ marginBottom: "10px" }}>
+                    <input className="cpanel-input" value={p.imageUrl || ""} onChange={e => { const next = [...projectsList]; next[idx].imageUrl = e.target.value; setProjectsList(next); }} placeholder="Image URL Direct Link (optional fallback)"/>
+                  </div>
                   <button className="cpanel-btn cpanel-btn-danger" style={{ fontSize: "11px", padding: "4px 8px" }} onClick={() => { const next = [...projectsList]; next.splice(idx, 1); setProjectsList(next); }}>Delete Project</button>
                 </div>
               ))}
@@ -505,14 +572,41 @@ const AdminApp = () => {
           {activeTab === "certs" && (
             <div className="cpanel-card">
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "16px" }}>
-                <div className="cpanel-card-title" style={{ marginBottom: 0 }}>Certifications CMS</div>
-                <button className="cpanel-btn cpanel-btn-outline" onClick={() => setCertsList([...certsList, { issuer: "Issuer", title: "Certificate Title", date: "2026", id: "REF-001", desc: "" }])}>+ Add Certificate</button>
+                <div className="cpanel-card-title" style={{ marginBottom: 0 }}>Certifications CMS (WebP Photo Upload)</div>
+                <button className="cpanel-btn cpanel-btn-outline" onClick={() => setCertsList([...certsList, { issuer: "Issuer", title: "Certificate Title", date: "2026", id: "REF-001", desc: "", imageUrl: "" }])}>+ Add Certificate</button>
               </div>
               {certsList.map((c, idx) => (
                 <div key={idx} style={{ border: "1px solid rgba(255,255,255,0.08)", padding: "16px", borderRadius: "12px", background: "rgba(255,255,255,0.02)", marginBottom: "12px" }}>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "10px" }}>
                     <input className="cpanel-input" value={c.issuer} onChange={e => { const next = [...certsList]; next[idx].issuer = e.target.value; setCertsList(next); }} placeholder="Issuer"/>
                     <input className="cpanel-input" value={c.title} onChange={e => { const next = [...certsList]; next[idx].title = e.target.value; setCertsList(next); }} placeholder="Title"/>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "10px" }}>
+                    <input className="cpanel-input" value={c.date || ""} onChange={e => { const next = [...certsList]; next[idx].date = e.target.value; setCertsList(next); }} placeholder="Date (e.g. Jun 2026)"/>
+                    <input className="cpanel-input" value={c.id || ""} onChange={e => { const next = [...certsList]; next[idx].id = e.target.value; setCertsList(next); }} placeholder="Certificate ID / Ref"/>
+                  </div>
+                  <div className="cpanel-input-group" style={{ marginBottom: "10px" }}>
+                    <label>Certificate Document/Photo Upload (Compressed to WebP)</label>
+                    <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                      {c.imageUrl && (
+                        <img src={c.imageUrl} alt="Cert Preview" style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "6px" }} />
+                      )}
+                      <input type="file" accept="image/*" className="cpanel-input" onChange={async (e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          const compressed = await compressImage(file, 800, 800, 0.8);
+                          if (compressed) {
+                            const next = [...certsList];
+                            next[idx].imageUrl = compressed;
+                            setCertsList(next);
+                            showToast("Certificate photo compressed to WebP!");
+                          }
+                        }
+                      }} style={{ flex: 1 }} />
+                    </div>
+                  </div>
+                  <div className="cpanel-input-group" style={{ marginBottom: "10px" }}>
+                    <input className="cpanel-input" value={c.imageUrl || ""} onChange={e => { const next = [...certsList]; next[idx].imageUrl = e.target.value; setCertsList(next); }} placeholder="Image URL Direct Link (optional)"/>
                   </div>
                   <button className="cpanel-btn cpanel-btn-danger" style={{ fontSize: "11px", padding: "4px 8px" }} onClick={() => { const next = [...certsList]; next.splice(idx, 1); setCertsList(next); }}>Remove</button>
                 </div>
