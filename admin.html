@@ -333,6 +333,29 @@ const AdminApp = () => {
                       }} style={{ flex: 1 }} />
                     </div>
                   </div>
+                  <div className="cpanel-input-group cpanel-form-full">
+                    <label>Resume File Upload (PDF / Document)</label>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                      <input type="file" accept=".pdf,.doc,.docx" className="cpanel-input" onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onload = (evt) => {
+                            const resBase64 = evt.target.result;
+                            setHeroForm(prev => ({ ...prev, resumeUrl: resBase64 }));
+                            setAboutForm(prev => ({ ...prev, resumeUrl: resBase64 }));
+                            showToast("Resume uploaded successfully!");
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }} style={{ flex: 1 }} />
+                      {(heroForm.resumeUrl || aboutForm.resumeUrl) && (
+                        <a href={heroForm.resumeUrl || aboutForm.resumeUrl} target="_blank" rel="noopener noreferrer" className="cpanel-btn cpanel-btn-outline" style={{ padding: '6px 12px', fontSize: '12px' }}>
+                          📄 View Current Resume
+                        </a>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -343,7 +366,7 @@ const AdminApp = () => {
                   <div className="cpanel-input-group"><label>Experience Text</label><input className="cpanel-input" value={aboutForm.experience || ""} onChange={e=>setAboutForm({...aboutForm, experience:e.target.value})}/></div>
                   <div className="cpanel-input-group"><label>Email Address</label><input className="cpanel-input" value={aboutForm.email || ""} onChange={e=>setAboutForm({...aboutForm, email:e.target.value})}/></div>
                   <div className="cpanel-input-group"><label>Phone Number</label><input className="cpanel-input" value={aboutForm.phone || ""} onChange={e=>setAboutForm({...aboutForm, phone:e.target.value})}/></div>
-                  <div className="cpanel-input-group"><label>Location</label><input className="cpanel-input" value={aboutForm.location || ""} onChange={e=>setAboutForm({...aboutForm, location:e.target.value})}/></div>
+                  <div className="cpanel-input-group"><label>Location</label><input className="cpanel-input" value={aboutForm.location || ""} onChange={e=>{ const val = e.target.value; setAboutForm({...aboutForm, location:val}); setContactForm({...contactForm, location:val}); }}/></div>
                   <div className="cpanel-input-group"><label>Status Badge</label><input className="cpanel-input" value={aboutForm.status || ""} onChange={e=>setAboutForm({...aboutForm, status:e.target.value})}/></div>
                   <div className="cpanel-input-group cpanel-form-full"><label>Headline</label><input className="cpanel-input" value={aboutForm.headline || ""} onChange={e=>setAboutForm({...aboutForm, headline:e.target.value})}/></div>
                   <div className="cpanel-input-group cpanel-form-full"><label>Summary Subtitle</label><input className="cpanel-input" value={aboutForm.summary || ""} onChange={e=>setAboutForm({...aboutForm, summary:e.target.value})}/></div>
@@ -370,6 +393,7 @@ const AdminApp = () => {
                   <div className="cpanel-input-group"><label>WhatsApp URL</label><input className="cpanel-input" value={contactForm.whatsappUrl || ""} onChange={e=>setContactForm({...contactForm, whatsappUrl:e.target.value})}/></div>
                   <div className="cpanel-input-group"><label>Contact Email</label><input className="cpanel-input" value={contactForm.email || ""} onChange={e=>setContactForm({...contactForm, email:e.target.value})}/></div>
                   <div className="cpanel-input-group"><label>Contact Phone</label><input className="cpanel-input" value={contactForm.phone || ""} onChange={e=>setContactForm({...contactForm, phone:e.target.value})}/></div>
+                  <div className="cpanel-input-group"><label>Contact Location</label><input className="cpanel-input" value={contactForm.location || aboutForm.location || ""} onChange={e=>{ const val = e.target.value; setContactForm({...contactForm, location:val}); setAboutForm({...aboutForm, location:val}); }}/></div>
                 </div>
               </div>
 

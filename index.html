@@ -1818,6 +1818,17 @@ const Hero = ({ theme }) => {
             <a href="#projects" className="btn btn-primary">
               <Icon name="briefcase" size={15} /> View My Work
             </a>
+            {(hero.resumeUrl || (data.about && data.about.resumeUrl)) && (hero.resumeUrl || data.about.resumeUrl) !== "#" && (
+              <a
+                href={hero.resumeUrl || data.about.resumeUrl}
+                download="Mohamed_Asik_Resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-outline"
+              >
+                <Icon name="download" size={15} /> Download Resume
+              </a>
+            )}
             <a href="#contact" className="btn btn-outline">
               <Icon name="paperplane" size={15} /> Contact Me
             </a>
