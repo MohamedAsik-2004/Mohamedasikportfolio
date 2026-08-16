@@ -127,9 +127,20 @@ const AdminApp = () => {
       const res = await fetch(`${API_BASE}/api/visitors`);
       if (res.ok) {
         const vData = await res.json();
-        if (vData.totalVisitors) setVisitorCount(vData.totalVisitors);
+        if (vData.totalVisitors !== undefined) setVisitorCount(vData.totalVisitors);
       }
     } catch(err) { console.error("Error fetching visitors:", err); }
+  };
+
+  const clearVisitors = async () => {
+    if (!window.confirm("Are you sure you want to reset the visitor analytics counter to 0? This will update live across all connected clients.")) return;
+    try {
+      const res = await fetch(`${API_BASE}/api/visitors/reset`, { method: "POST" });
+      if (res.ok) {
+        setVisitorCount(0);
+        showToast("Visitor analytics reset to 0!");
+      }
+    } catch(err) { console.error("Error resetting visitors:", err); showToast("Failed to reset visitor count"); }
   };
 
   React.useEffect(() => {
@@ -144,7 +155,7 @@ const AdminApp = () => {
           if (payload.type === 'PORTFOLIO_UPDATED' && payload.data) {
             setData(payload.data);
           }
-          if (payload.type === 'VISITOR_COUNT_UPDATED' && payload.totalVisitors) {
+          if (payload.type === 'VISITOR_COUNT_UPDATED' && payload.totalVisitors !== undefined) {
             setVisitorCount(payload.totalVisitors);
           }
         } catch(err) {}
@@ -309,10 +320,13 @@ const AdminApp = () => {
                   <div style={{ background: "linear-gradient(135deg, rgba(124, 92, 255, 0.15), rgba(79, 141, 253, 0.15))", padding: "22px", borderRadius: "14px", border: "1px solid rgba(124, 92, 255, 0.3)" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <div style={{ fontSize: "12px", color: "#a5b4fc", fontWeight: "700", letterSpacing: "0.05em" }}>👁️ TOTAL VISITORS</div>
-                      <button onClick={fetchVisitors} style={{ background: "transparent", border: "none", color: "#a5b4fc", cursor: "pointer", fontSize: "12px" }}>🔄</button>
+                      <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+                        <button onClick={fetchVisitors} title="Refresh Live Count" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: "#a5b4fc", cursor: "pointer", fontSize: "11px", padding: "2px 6px", borderRadius: "5px" }}>🔄</button>
+                        <button onClick={clearVisitors} title="Clear All Visitors" style={{ background: "rgba(239, 68, 68, 0.15)", border: "1px solid rgba(239, 68, 68, 0.3)", color: "#f87171", cursor: "pointer", fontSize: "11px", fontWeight: "600", padding: "2px 7px", borderRadius: "5px" }}>🗑️ Clear</button>
+                      </div>
                     </div>
                     <div style={{ fontSize: "36px", fontWeight: "800", color: "#ffffff", marginTop: "8px" }}>
-                      {visitorCount ? visitorCount.toLocaleString() : "1,284"}
+                      {visitorCount !== null && visitorCount !== undefined ? visitorCount.toLocaleString() : "0"}
                     </div>
                     <div style={{ fontSize: "11px", color: "#35d68a", marginTop: "4px" }}>● Live Traffic Counter</div>
                   </div>

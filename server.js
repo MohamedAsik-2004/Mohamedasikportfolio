@@ -378,20 +378,30 @@ const notifyClientsOfVisitorUpdate = (count) => {
 app.get('/api/visitors', (req, res) => {
   db.get("SELECT value FROM settings WHERE key = 'visitor_count'", (err, row) => {
     if (err) return res.status(500).json({ error: err.message });
-    const count = row ? parseInt(row.value, 10) || 1284 : 1284;
-    res.json({ totalVisitors: count });
+    const count = row && row.value !== undefined ? parseInt(row.value, 10) : 0;
+    res.json({ totalVisitors: isNaN(count) ? 0 : count });
   });
 });
 
 app.post('/api/visitors/increment', (req, res) => {
   db.get("SELECT value FROM settings WHERE key = 'visitor_count'", (err, row) => {
-    let currentCount = row ? parseInt(row.value, 10) || 1284 : 1284;
+    let currentCount = row && row.value !== undefined ? parseInt(row.value, 10) : 0;
+    if (isNaN(currentCount)) currentCount = 0;
     currentCount += 1;
     db.run("INSERT OR REPLACE INTO settings (key, value) VALUES ('visitor_count', ?)", [currentCount.toString()], (err) => {
       if (err) return res.status(500).json({ error: err.message });
       notifyClientsOfVisitorUpdate(currentCount);
       res.json({ success: true, totalVisitors: currentCount });
     });
+  });
+});
+
+app.post('/api/visitors/reset', (req, res) => {
+  const resetCount = 0;
+  db.run("INSERT OR REPLACE INTO settings (key, value) VALUES ('visitor_count', ?)", ['0'], (err) => {
+    if (err) return res.status(500).json({ error: err.message });
+    notifyClientsOfVisitorUpdate(resetCount);
+    res.json({ success: true, totalVisitors: resetCount });
   });
 });
 
