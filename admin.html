@@ -600,6 +600,10 @@ const AdminApp = () => {
                     <input className="cpanel-input" value={c.id || ""} onChange={e => { const next = [...certsList]; next[idx].id = e.target.value; setCertsList(next); }} placeholder="Certificate ID / Ref"/>
                   </div>
                   <div className="cpanel-input-group" style={{ marginBottom: "10px" }}>
+                    <label style={{ fontSize: "12px", color: "#9aa3b8", marginBottom: "4px", display: "block" }}>Certificate Description</label>
+                    <textarea className="cpanel-input" rows="3" value={c.desc || c.description || ""} onChange={e => { const next = [...certsList]; next[idx].desc = e.target.value; next[idx].description = e.target.value; setCertsList(next); }} placeholder="Enter Certificate Description..."/>
+                  </div>
+                  <div className="cpanel-input-group" style={{ marginBottom: "10px" }}>
                     <label>Certificate Document/Photo Upload (Compressed to WebP)</label>
                     <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                       {c.imageUrl && (
