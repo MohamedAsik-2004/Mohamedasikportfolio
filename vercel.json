@@ -6,19 +6,15 @@
       "use": "@vercel/node"
     },
     {
-      "src": "styles.css",
+      "src": "*.html",
       "use": "@vercel/static"
     },
     {
-      "src": "index.html",
+      "src": "*.css",
       "use": "@vercel/static"
     },
     {
-      "src": "admin.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "portfolio_data.json",
+      "src": "*.json",
       "use": "@vercel/static"
     }
   ],
@@ -30,18 +26,6 @@
     {
       "src": "/admin",
       "dest": "admin.html"
-    },
-    {
-      "src": "/styles.css",
-      "dest": "styles.css"
-    },
-    {
-      "src": "/portfolio_data.json",
-      "dest": "portfolio_data.json"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "index.html"
     }
   ]
 }
