@@ -479,11 +479,17 @@ app.delete('/api/leads', (req, res) => {
 });
 
 // Serve static frontend files
+app.use(express.static(process.cwd()));
 app.use(express.static(__dirname));
+
+// Serve CSS stylesheet explicitly
+app.get('/styles.css', (req, res) => {
+  res.sendFile(path.join(process.cwd(), 'styles.css'));
+});
 
 // Serve standalone admin portal route
 app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'admin.html'));
+  res.sendFile(path.join(process.cwd(), 'admin.html'));
 });
 
 // Catch-all route to serve index.html
@@ -491,7 +497,7 @@ app.get('*', (req, res) => {
   if (req.path.includes('.')) {
     return res.status(404).end();
   }
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(process.cwd(), 'index.html'));
 });
 
 // Start Server & Export for Vercel / Cloud environments
