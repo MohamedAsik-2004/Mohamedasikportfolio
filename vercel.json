@@ -1,18 +1,10 @@
 {
   "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "api/index.js",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["styles.css", "index.html", "admin.html", "portfolio_data.json", "database.sqlite"]
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "api/index.js"
+      "source": "/(.*)",
+      "destination": "/api/index"
     }
   ]
 }
+
