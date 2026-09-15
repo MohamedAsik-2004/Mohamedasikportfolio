@@ -2787,7 +2787,7 @@ function App() {
 
     const fetchPortfolioData = async () => {
       try {
-        const res = await fetch(`${API_BASE}/api/portfolio-data`);
+        const res = await fetch(`${API_BASE}/api/portfolio-data?t=${Date.now()}`);
         if (res.ok) {
           const data = await res.json();
           setPortfolioData(data);

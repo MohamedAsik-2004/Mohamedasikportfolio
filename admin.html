@@ -95,7 +95,7 @@ const AdminApp = () => {
 
   const fetchPortfolioData = async () => {
     try {
-      const res = await fetch(`${API_BASE}/api/portfolio-data`);
+      const res = await fetch(`${API_BASE}/api/portfolio-data?t=${Date.now()}`);
       if (res.ok) {
         const fetchedData = await res.json();
         setData(fetchedData);
@@ -114,14 +114,14 @@ const AdminApp = () => {
 
   const fetchLeads = async () => {
     try {
-      const res = await fetch(`${API_BASE}/api/leads`);
+      const res = await fetch(`${API_BASE}/api/leads?t=${Date.now()}`);
       if (res.ok) { setLeadsList(await res.json()); }
     } catch(err) { console.error("Error fetching leads:", err); }
   };
 
   const fetchVisitors = async () => {
     try {
-      const res = await fetch(`${API_BASE}/api/visitors`);
+      const res = await fetch(`${API_BASE}/api/visitors?t=${Date.now()}`);
       if (res.ok) {
         const vData = await res.json();
         if (vData.totalVisitors !== undefined) setVisitorCount(vData.totalVisitors);
