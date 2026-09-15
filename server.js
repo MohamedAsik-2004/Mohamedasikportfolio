@@ -491,9 +491,12 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Start Server
-const PORT = process.env.PORT || 5000;
+// Start Server & Export for Vercel / Cloud environments
+module.exports = app;
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+if (require.main === module) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
