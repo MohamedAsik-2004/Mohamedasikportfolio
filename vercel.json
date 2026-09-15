@@ -3,28 +3,45 @@
   "builds": [
     {
       "src": "server.js",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["styles.css", "index.html", "admin.html", "portfolio_data.json"]
-      }
+      "use": "@vercel/node"
+    },
+    {
+      "src": "styles.css",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "index.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "admin.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "portfolio_data.json",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/styles.css",
-      "dest": "/styles.css"
+      "src": "/api/(.*)",
+      "dest": "server.js"
     },
     {
       "src": "/admin",
-      "dest": "/admin.html"
+      "dest": "admin.html"
     },
     {
-      "src": "/api/(.*)",
-      "dest": "/server.js"
+      "src": "/styles.css",
+      "dest": "styles.css"
+    },
+    {
+      "src": "/portfolio_data.json",
+      "dest": "portfolio_data.json"
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "index.html"
     }
   ]
 }
