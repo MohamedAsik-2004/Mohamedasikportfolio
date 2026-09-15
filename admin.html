@@ -93,21 +93,41 @@ const AdminApp = () => {
     setTimeout(() => setToast({ show: false, msg: "" }), 3200);
   };
 
+  const syncStateFromData = (fetchedData) => {
+    if (!fetchedData) return;
+    setData(fetchedData);
+    if (fetchedData.hero) setHeroForm({ ...fetchedData.hero });
+    if (fetchedData.about) setAboutForm({ ...fetchedData.about });
+    if (fetchedData.contact) setContactForm({ ...fetchedData.contact });
+    if (fetchedData.academic) setAcademicList(JSON.parse(JSON.stringify(fetchedData.academic)));
+    if (fetchedData.experience) setExperienceList(JSON.parse(JSON.stringify(fetchedData.experience)));
+    if (fetchedData.skills) setSkillsList(JSON.parse(JSON.stringify(fetchedData.skills)));
+    if (fetchedData.certificates) setCertsList(JSON.parse(JSON.stringify(fetchedData.certificates)));
+    if (fetchedData.projects) setProjectsList(JSON.parse(JSON.stringify(fetchedData.projects)));
+    if (fetchedData.animationSettings) setAnimForm({ ...fetchedData.animationSettings });
+  };
+
+  const getCurrentFullData = () => {
+    return {
+      ...data,
+      hero: heroForm,
+      about: aboutForm,
+      contact: contactForm,
+      academic: academicList,
+      experience: experienceList,
+      skills: skillsList,
+      certificates: certsList,
+      projects: projectsList,
+      animationSettings: animForm
+    };
+  };
+
   const fetchPortfolioData = async () => {
     try {
       const res = await fetch(`${API_BASE}/api/portfolio-data?t=${Date.now()}`);
       if (res.ok) {
         const fetchedData = await res.json();
-        setData(fetchedData);
-        if (fetchedData.hero) setHeroForm({ ...fetchedData.hero });
-        if (fetchedData.about) setAboutForm({ ...fetchedData.about });
-        if (fetchedData.contact) setContactForm({ ...fetchedData.contact });
-        if (fetchedData.academic) setAcademicList(JSON.parse(JSON.stringify(fetchedData.academic)));
-        if (fetchedData.experience) setExperienceList(JSON.parse(JSON.stringify(fetchedData.experience)));
-        if (fetchedData.skills) setSkillsList(JSON.parse(JSON.stringify(fetchedData.skills)));
-        if (fetchedData.certificates) setCertsList(JSON.parse(JSON.stringify(fetchedData.certificates)));
-        if (fetchedData.projects) setProjectsList(JSON.parse(JSON.stringify(fetchedData.projects)));
-        if (fetchedData.animationSettings) setAnimForm({ ...fetchedData.animationSettings });
+        syncStateFromData(fetchedData);
       }
     } catch(err) { console.error("Error loading data:", err); }
   };
@@ -191,8 +211,12 @@ const AdminApp = () => {
     } catch(err) { setLoginError("Login failed: " + err.message); }
   };
 
-  const saveConfig = async (updatedData) => {
-    setData(updatedData);
+  const saveConfig = async (partialOverride) => {
+    const fullData = getCurrentFullData();
+    const updatedData = partialOverride ? { ...fullData, ...partialOverride } : fullData;
+
+    syncStateFromData(updatedData);
+
     try {
       localStorage.setItem("portfolio_data", JSON.stringify(updatedData));
       if (typeof BroadcastChannel !== 'undefined') {
@@ -208,8 +232,16 @@ const AdminApp = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ data: updatedData })
       });
-      if (res.ok) showToast("✓ Changes persistent & broadcast live!");
-    } catch(err) { console.error("Error saving data:", err); }
+      const resData = await res.json().catch(() => ({}));
+      if (res.ok && resData.success) {
+        showToast("✓ Changes saved persistently & broadcast live!");
+      } else {
+        showToast("❌ Save failed: " + (resData.error || res.statusText || "Server error"));
+      }
+    } catch(err) {
+      console.error("Error saving data:", err);
+      showToast("❌ Network error saving data: " + err.message);
+    }
   };
 
   const compressImage = (file, maxWidth = 800, maxHeight = 800, quality = 0.8) => {
@@ -283,6 +315,7 @@ const AdminApp = () => {
           </div>
         </div>
         <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+          <button className="cpanel-btn cpanel-btn-primary" style={{ background: "linear-gradient(135deg, #7c5cff, #4f8dfd)", color: "#fff", fontWeight: "600", boxShadow: "0 4px 14px rgba(124, 92, 255, 0.4)" }} onClick={() => saveConfig()}>💾 Save All Changes</button>
           <a href="/" target="_blank" rel="noopener noreferrer" className="cpanel-btn cpanel-btn-outline">🌐 Live Portfolio ↗</a>
           <button className="cpanel-close-btn" onClick={() => setIsLoggedIn(false)}>🚪 Logout</button>
         </div>
