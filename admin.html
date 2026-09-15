@@ -392,16 +392,27 @@ const AdminApp = () => {
                   <div className="cpanel-input-group cpanel-form-full"><label>Availability Badge</label><input className="cpanel-input" value={heroForm.availability || "Open to Opportunities"} onChange={e=>setHeroForm({...heroForm, availability:e.target.value})}/></div>
                   <div className="cpanel-input-group cpanel-form-full"><label>Bio Narrative</label><textarea className="cpanel-input cpanel-textarea" value={heroForm.bio} onChange={e=>setHeroForm({...heroForm, bio:e.target.value})}/></div>
                   <div className="cpanel-input-group cpanel-form-full">
-                    <label>Profile Avatar Upload (WebP Canvas Compression)</label>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                      <img src={heroForm.avatarUrl || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=100&h=100"} alt="Preview" style={{ width: '48px', height: '48px', borderRadius: '10px', objectFit: 'cover' }} />
+                    <label style={{ fontWeight: "600", color: "#a5b4fc" }}>📸 Hero Section Profile Photo (WebP Canvas Compression)</label>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+                      <img src={heroForm.avatarUrl || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=100&h=100"} alt="Hero Avatar Preview" style={{ width: '56px', height: '56px', borderRadius: '12px', objectFit: 'cover', border: '2px solid rgba(124, 92, 255, 0.5)', boxShadow: '0 4px 12px rgba(124, 92, 255, 0.25)' }} />
                       <input type="file" accept="image/*" className="cpanel-input" onChange={async (e) => {
                         const file = e.target.files[0];
                         if (file) {
-                          const compressed = await compressImage(file, 800, 800, 0.8);
-                          if (compressed) { setHeroForm(prev => ({ ...prev, avatarUrl: compressed })); showToast("Avatar compressed!"); }
+                          const compressed = await compressImage(file, 800, 800, 0.82);
+                          if (compressed) {
+                            setHeroForm(prev => ({ ...prev, avatarUrl: compressed }));
+                            showToast("✓ Hero photo compressed to WebP!");
+                          }
                         }
-                      }} style={{ flex: 1 }} />
+                      }} style={{ flex: 1, minWidth: '200px' }} />
+                      {heroForm.avatarUrl && (
+                        <button type="button" className="cpanel-btn cpanel-btn-danger" style={{ padding: '6px 10px', fontSize: '12px' }} onClick={() => setHeroForm(prev => ({ ...prev, avatarUrl: "" }))}>
+                          ✕ Remove Photo
+                        </button>
+                      )}
+                    </div>
+                    <div style={{ marginTop: '8px' }}>
+                      <input type="text" className="cpanel-input" value={heroForm.avatarUrl || ""} onChange={e => setHeroForm({ ...heroForm, avatarUrl: e.target.value })} placeholder="Or enter direct image URL (optional fallback)" />
                     </div>
                   </div>
                   <div className="cpanel-input-group cpanel-form-full">
@@ -433,6 +444,38 @@ const AdminApp = () => {
               <div className="cpanel-card">
                 <div className="cpanel-card-title">About Me Details</div>
                 <div className="cpanel-form-grid">
+                  <div className="cpanel-input-group cpanel-form-full">
+                    <label style={{ fontWeight: "600", color: "#38bdf8" }}>📸 Who I Am / About Me Section Photo (WebP Compression)</label>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+                      <img src={aboutForm.avatarUrl || heroForm.avatarUrl || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=100&h=100"} alt="About Avatar Preview" style={{ width: '56px', height: '56px', borderRadius: '12px', objectFit: 'cover', border: '2px solid rgba(56, 189, 248, 0.5)', boxShadow: '0 4px 12px rgba(56, 189, 248, 0.25)' }} />
+                      <input type="file" accept="image/*" className="cpanel-input" onChange={async (e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          const compressed = await compressImage(file, 800, 800, 0.82);
+                          if (compressed) {
+                            setAboutForm(prev => ({ ...prev, avatarUrl: compressed }));
+                            showToast("✓ About photo compressed to WebP!");
+                          }
+                        }
+                      }} style={{ flex: 1, minWidth: '200px' }} />
+                      {heroForm.avatarUrl && heroForm.avatarUrl !== aboutForm.avatarUrl && (
+                        <button type="button" className="cpanel-btn cpanel-btn-outline" style={{ padding: '6px 12px', fontSize: '12px' }} onClick={() => {
+                          setAboutForm(prev => ({ ...prev, avatarUrl: heroForm.avatarUrl }));
+                          showToast("⚡ Copied Hero photo to About section!");
+                        }}>
+                          ⚡ Sync from Hero Photo
+                        </button>
+                      )}
+                      {aboutForm.avatarUrl && (
+                        <button type="button" className="cpanel-btn cpanel-btn-danger" style={{ padding: '6px 10px', fontSize: '12px' }} onClick={() => setAboutForm(prev => ({ ...prev, avatarUrl: "" }))}>
+                          ✕ Remove Photo
+                        </button>
+                      )}
+                    </div>
+                    <div style={{ marginTop: '8px' }}>
+                      <input type="text" className="cpanel-input" value={aboutForm.avatarUrl || ""} onChange={e => setAboutForm({ ...aboutForm, avatarUrl: e.target.value })} placeholder="Or enter direct image URL (optional fallback)" />
+                    </div>
+                  </div>
                   <div className="cpanel-input-group"><label>Display Name</label><input className="cpanel-input" value={aboutForm.name || ""} onChange={e=>setAboutForm({...aboutForm, name:e.target.value})}/></div>
                   <div className="cpanel-input-group"><label>Experience Text</label><input className="cpanel-input" value={aboutForm.experience || ""} onChange={e=>setAboutForm({...aboutForm, experience:e.target.value})}/></div>
                   <div className="cpanel-input-group"><label>Email Address</label><input className="cpanel-input" value={aboutForm.email || ""} onChange={e=>setAboutForm({...aboutForm, email:e.target.value})}/></div>
@@ -582,28 +625,37 @@ const AdminApp = () => {
                   <div className="cpanel-input-group" style={{ marginBottom: "10px" }}>
                     <input className="cpanel-input" value={p.tech} onChange={e => { const next = [...projectsList]; next[idx].tech = e.target.value; setProjectsList(next); }} placeholder="Technologies (comma separated)"/>
                   </div>
-                  <div className="cpanel-input-group" style={{ marginBottom: "10px" }}>
-                    <label>Project Photo Upload (Compressed to WebP)</label>
-                    <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                      {p.imageUrl && (
-                        <img src={p.imageUrl} alt="Project Preview" style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "6px" }} />
+                  <div className="cpanel-input-group" style={{ marginBottom: "12px", background: "rgba(255,255,255,0.02)", padding: "12px", borderRadius: "10px", border: "1px dashed rgba(124,92,255,0.3)" }}>
+                    <label style={{ fontWeight: "600", color: "#a5b4fc", display: "block", marginBottom: "6px" }}>📸 Project Photo / Screenshot Upload (WebP Canvas Compression)</label>
+                    <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
+                      {p.imageUrl ? (
+                        <img src={p.imageUrl} alt="Project Preview" style={{ width: "60px", height: "60px", objectFit: "cover", borderRadius: "8px", border: "1px solid rgba(124, 92, 255, 0.4)", boxShadow: "0 2px 8px rgba(0,0,0,0.4)" }} />
+                      ) : (
+                        <div style={{ width: "60px", height: "60px", borderRadius: "8px", background: "rgba(255,255,255,0.05)", border: "1px dashed rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", color: "#9aa3b8", fontSize: "18px" }}>🖼️</div>
                       )}
                       <input type="file" accept="image/*" className="cpanel-input" onChange={async (e) => {
                         const file = e.target.files[0];
                         if (file) {
-                          const compressed = await compressImage(file, 800, 800, 0.8);
+                          const compressed = await compressImage(file, 1000, 1000, 0.82);
                           if (compressed) {
                             const next = [...projectsList];
                             next[idx].imageUrl = compressed;
                             setProjectsList(next);
-                            showToast("Project photo compressed to WebP!");
+                            showToast("✓ Project photo uploaded & compressed to WebP!");
                           }
                         }
-                      }} style={{ flex: 1 }} />
+                      }} style={{ flex: 1, minWidth: "200px" }} />
+                      {p.imageUrl && (
+                        <button type="button" className="cpanel-btn cpanel-btn-danger" style={{ padding: "6px 10px", fontSize: "12px" }} onClick={() => {
+                          const next = [...projectsList];
+                          next[idx].imageUrl = "";
+                          setProjectsList(next);
+                        }}>✕ Clear Photo</button>
+                      )}
                     </div>
-                  </div>
-                  <div className="cpanel-input-group" style={{ marginBottom: "10px" }}>
-                    <input className="cpanel-input" value={p.imageUrl || ""} onChange={e => { const next = [...projectsList]; next[idx].imageUrl = e.target.value; setProjectsList(next); }} placeholder="Image URL Direct Link (optional fallback)"/>
+                    <div style={{ marginTop: "8px" }}>
+                      <input className="cpanel-input" value={p.imageUrl || ""} onChange={e => { const next = [...projectsList]; next[idx].imageUrl = e.target.value; setProjectsList(next); }} placeholder="Or paste direct image URL link (optional fallback)"/>
+                    </div>
                   </div>
                   <button className="cpanel-btn cpanel-btn-danger" style={{ fontSize: "11px", padding: "4px 8px" }} onClick={() => { const next = [...projectsList]; next.splice(idx, 1); setProjectsList(next); }}>Delete Project</button>
                 </div>
@@ -633,28 +685,37 @@ const AdminApp = () => {
                     <label style={{ fontSize: "12px", color: "#9aa3b8", marginBottom: "4px", display: "block" }}>Certificate Description</label>
                     <textarea className="cpanel-input" rows="3" value={c.desc || c.description || ""} onChange={e => { const next = [...certsList]; next[idx].desc = e.target.value; next[idx].description = e.target.value; setCertsList(next); }} placeholder="Enter Certificate Description..."/>
                   </div>
-                  <div className="cpanel-input-group" style={{ marginBottom: "10px" }}>
-                    <label>Certificate Document/Photo Upload (Compressed to WebP)</label>
-                    <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                      {c.imageUrl && (
-                        <img src={c.imageUrl} alt="Cert Preview" style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "6px" }} />
+                  <div className="cpanel-input-group" style={{ marginBottom: "12px", background: "rgba(255,255,255,0.02)", padding: "12px", borderRadius: "10px", border: "1px dashed rgba(234,179,8,0.3)" }}>
+                    <label style={{ fontWeight: "600", color: "#fef08a", display: "block", marginBottom: "6px" }}>📜 Certificate Badge / Document Photo Upload (WebP Compression)</label>
+                    <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
+                      {c.imageUrl ? (
+                        <img src={c.imageUrl} alt="Cert Preview" style={{ width: "60px", height: "60px", objectFit: "cover", borderRadius: "8px", border: "1px solid rgba(234, 179, 8, 0.4)", boxShadow: "0 2px 8px rgba(0,0,0,0.4)" }} />
+                      ) : (
+                        <div style={{ width: "60px", height: "60px", borderRadius: "8px", background: "rgba(255,255,255,0.05)", border: "1px dashed rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", color: "#9aa3b8", fontSize: "18px" }}>🎓</div>
                       )}
                       <input type="file" accept="image/*" className="cpanel-input" onChange={async (e) => {
                         const file = e.target.files[0];
                         if (file) {
-                          const compressed = await compressImage(file, 800, 800, 0.8);
+                          const compressed = await compressImage(file, 900, 900, 0.82);
                           if (compressed) {
                             const next = [...certsList];
                             next[idx].imageUrl = compressed;
                             setCertsList(next);
-                            showToast("Certificate photo compressed to WebP!");
+                            showToast("✓ Certificate photo uploaded & compressed to WebP!");
                           }
                         }
-                      }} style={{ flex: 1 }} />
+                      }} style={{ flex: 1, minWidth: "200px" }} />
+                      {c.imageUrl && (
+                        <button type="button" className="cpanel-btn cpanel-btn-danger" style={{ padding: "6px 10px", fontSize: "12px" }} onClick={() => {
+                          const next = [...certsList];
+                          next[idx].imageUrl = "";
+                          setCertsList(next);
+                        }}>✕ Clear Photo</button>
+                      )}
                     </div>
-                  </div>
-                  <div className="cpanel-input-group" style={{ marginBottom: "10px" }}>
-                    <input className="cpanel-input" value={c.imageUrl || ""} onChange={e => { const next = [...certsList]; next[idx].imageUrl = e.target.value; setCertsList(next); }} placeholder="Image URL Direct Link (optional)"/>
+                    <div style={{ marginTop: "8px" }}>
+                      <input className="cpanel-input" value={c.imageUrl || ""} onChange={e => { const next = [...certsList]; next[idx].imageUrl = e.target.value; setCertsList(next); }} placeholder="Or paste direct certificate image URL link (optional fallback)"/>
+                    </div>
                   </div>
                   <button className="cpanel-btn cpanel-btn-danger" style={{ fontSize: "11px", padding: "4px 8px" }} onClick={() => { const next = [...certsList]; next.splice(idx, 1); setCertsList(next); }}>Remove</button>
                 </div>
