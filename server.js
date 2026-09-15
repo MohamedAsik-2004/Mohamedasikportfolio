@@ -7,14 +7,45 @@ const fs = require('fs');
 
 const app = express();
 
-const DB_PATH = path.join(__dirname, 'database.sqlite');
-const PORTFOLIO_JSON_PATH = path.join(__dirname, 'portfolio_data.json');
+// Detect Vercel / Serverless environment (read-only filesystem, use /tmp for writable files)
+const isVercel = process.env.VERCEL === '1' || Boolean(process.env.NOW_REGION) || Boolean(process.env.AWS_LAMBDA_FUNCTION_NAME);
+const DATA_DIR = isVercel ? '/tmp' : __dirname;
+
+const DB_PATH = path.join(DATA_DIR, 'database.sqlite');
+const PORTFOLIO_JSON_PATH = path.join(DATA_DIR, 'portfolio_data.json');
+
+// Copy seed data to /tmp if running on Vercel
+if (isVercel) {
+  const SEED_JSON = path.join(__dirname, 'portfolio_data.json');
+  const SEED_DB = path.join(__dirname, 'database.sqlite');
+
+  try {
+    if (!fs.existsSync(PORTFOLIO_JSON_PATH) && fs.existsSync(SEED_JSON)) {
+      fs.copyFileSync(SEED_JSON, PORTFOLIO_JSON_PATH);
+    }
+  } catch (err) {
+    console.error('Error seeding JSON to /tmp:', err.message);
+  }
+
+  try {
+    if (!fs.existsSync(DB_PATH) && fs.existsSync(SEED_DB)) {
+      fs.copyFileSync(SEED_DB, DB_PATH);
+    }
+  } catch (err) {
+    console.error('Error seeding DB to /tmp:', err.message);
+  }
+}
 
 // Helper to get initial portfolio data (prefers portfolio_data.json if exists)
 const getInitialPortfolioData = () => {
   try {
     if (fs.existsSync(PORTFOLIO_JSON_PATH)) {
       const raw = fs.readFileSync(PORTFOLIO_JSON_PATH, 'utf8');
+      return JSON.parse(raw);
+    }
+    const seedPath = path.join(__dirname, 'portfolio_data.json');
+    if (fs.existsSync(seedPath)) {
+      const raw = fs.readFileSync(seedPath, 'utf8');
       return JSON.parse(raw);
     }
   } catch (e) {
