@@ -1,15 +1,18 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/index.js", "use": "@vercel/node" },
-    { "src": "styles.css", "use": "@vercel/static" },
-    { "src": "index.html", "use": "@vercel/static" },
-    { "src": "admin.html", "use": "@vercel/static" }
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["styles.css", "index.html", "admin.html", "portfolio_data.json", "database.sqlite"]
+      }
+    }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "api/index.js" },
-    { "src": "/admin", "dest": "admin.html" },
-    { "src": "/styles.css", "dest": "styles.css" },
-    { "src": "/", "dest": "index.html" }
+    {
+      "src": "/(.*)",
+      "dest": "api/index.js"
+    }
   ]
 }
