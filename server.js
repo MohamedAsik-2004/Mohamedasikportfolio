@@ -488,6 +488,9 @@ app.get('/admin', (req, res) => {
 
 // Catch-all route to serve index.html
 app.get('*', (req, res) => {
+  if (req.path.includes('.')) {
+    return res.status(404).end();
+  }
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
