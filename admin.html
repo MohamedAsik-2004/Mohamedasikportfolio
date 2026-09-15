@@ -219,6 +219,7 @@ const AdminApp = () => {
 
     try {
       localStorage.setItem("portfolio_data", JSON.stringify(updatedData));
+      localStorage.setItem("portfolio_data_sync_trigger", Date.now().toString());
       if (typeof BroadcastChannel !== 'undefined') {
         const bc = new BroadcastChannel('portfolio_sync');
         bc.postMessage({ type: 'PORTFOLIO_UPDATED', data: updatedData });

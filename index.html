@@ -123,16 +123,16 @@ const DEFAULT_PORTFOLIO_DATA = {
   hero: {
     firstName: "Mohamed Asik",
     lastName: "K",
-    role: "Flutter Developer",
+    role: "Flutter Developer & AI Specialist",
     availability: "Open to Opportunities",
-    bio: "I craft stunning mobile & web experiences with Flutter, Dart & modern backend integrations. Let's build something extraordinary together.",
+    bio: "I craft stunning mobile & web experiences with Flutter, Dart & modern backend integrations.",
     resumeUrl: "#",
     avatarUrl: "",
     socials: {
-      github: "https://github.com/",
+      github: "https://github.com/MohamedAsik-2004",
       linkedin: "https://linkedin.com/",
-      instagram: "https://instagram.com/",
-      twitter: "https://twitter.com/"
+      instagram: "#",
+      twitter: "#"
     }
   },
   about: {
@@ -2762,7 +2762,13 @@ const Contact = ({ showToast }) => {
 const SECTION_IDS = ["home", "about", "skills", "experience", "certificates", "projects", "contact"];
 
 function App() {
-  const [portfolioData, setPortfolioData] = useState(DEFAULT_PORTFOLIO_DATA);
+  const [portfolioData, setPortfolioData] = useState(() => {
+    try {
+      const cached = localStorage.getItem("portfolio_data");
+      if (cached) return JSON.parse(cached);
+    } catch(e) {}
+    return DEFAULT_PORTFOLIO_DATA;
+  });
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [theme, setTheme] = useState("dark");
   const [active, setActive] = useState("home");
@@ -2777,29 +2783,40 @@ function App() {
       }
     } catch(e) {}
 
-    // 1. Load cached data from localStorage immediately for instant 0ms load
-    try {
-      const cached = localStorage.getItem("portfolio_data");
-      if (cached) {
-        setPortfolioData(JSON.parse(cached));
-      }
-    } catch(e) {}
-
     const fetchPortfolioData = async () => {
       try {
         const res = await fetch(`${API_BASE}/api/portfolio-data?t=${Date.now()}`);
         if (res.ok) {
           const data = await res.json();
-          setPortfolioData(data);
-          try {
-            localStorage.setItem("portfolio_data", JSON.stringify(data));
-          } catch(e) {}
+          const newStr = JSON.stringify(data);
+          const currentStr = localStorage.getItem("portfolio_data");
+          if (currentStr !== newStr) {
+            setPortfolioData(data);
+            try {
+              localStorage.setItem("portfolio_data", newStr);
+            } catch(e) {}
+          }
         }
       } catch(err) {
         console.error("Error loading portfolio data:", err);
       }
     };
+
     fetchPortfolioData();
+
+    // 1. Cross-Tab Storage Event Listener (Instant <50ms sync across tabs on same origin)
+    const onStorage = (e) => {
+      if (e.key === "portfolio_data" || e.key === "portfolio_data_sync_trigger") {
+        try {
+          const cached = localStorage.getItem("portfolio_data");
+          if (cached) {
+            setPortfolioData(JSON.parse(cached));
+            showToast("⚡ Portfolio updated live!");
+          }
+        } catch(err) {}
+      }
+    };
+    window.addEventListener("storage", onStorage);
 
     // 2. BroadcastChannel Listener (Instant sync across tabs in same browser)
     let bc;
@@ -2808,9 +2825,10 @@ function App() {
         bc = new BroadcastChannel('portfolio_sync');
         bc.onmessage = (e) => {
           if (e.data && e.data.type === 'PORTFOLIO_UPDATED' && e.data.data) {
+            const newStr = JSON.stringify(e.data.data);
             setPortfolioData(e.data.data);
             try {
-              localStorage.setItem("portfolio_data", JSON.stringify(e.data.data));
+              localStorage.setItem("portfolio_data", newStr);
             } catch(err) {}
             showToast("⚡ Portfolio updated live!");
           }
@@ -2818,14 +2836,20 @@ function App() {
       } catch(e) {}
     }
 
-    // 3. Re-fetch when user switches back to tab
+    // 3. Re-fetch when user switches back to tab or focuses window
     const onFocus = () => fetchPortfolioData();
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") fetchPortfolioData();
+    };
     window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVisibility);
 
-    // 4. Fallback Polling every 12s in case SSE is disconnected
+    // 4. Smart Polling every 8s in case SSE is disconnected
     const pollInterval = setInterval(() => {
-      fetchPortfolioData();
-    }, 12000);
+      if (document.visibilityState === "visible") {
+        fetchPortfolioData();
+      }
+    }, 8000);
 
     // 5. Real-Time Live Sync EventSource Listener with auto-reconnect
     let eventSource;
@@ -2839,9 +2863,10 @@ function App() {
           try {
             const payload = JSON.parse(e.data);
             if (payload.type === 'PORTFOLIO_UPDATED' && payload.data) {
+              const newStr = JSON.stringify(payload.data);
               setPortfolioData(payload.data);
               try {
-                localStorage.setItem("portfolio_data", JSON.stringify(payload.data));
+                localStorage.setItem("portfolio_data", newStr);
               } catch(err) {}
               showToast("⚡ Portfolio updated live!");
             }
@@ -2853,7 +2878,7 @@ function App() {
         eventSource.onerror = () => {
           if (eventSource) eventSource.close();
           clearTimeout(reconnectTimer);
-          reconnectTimer = setTimeout(connectSSE, 5000);
+          reconnectTimer = setTimeout(connectSSE, 4000);
         };
       } catch(err) {
         console.error("EventSource error:", err);
@@ -2865,7 +2890,9 @@ function App() {
     return () => {
       if (eventSource) eventSource.close();
       if (bc) bc.close();
+      window.removeEventListener("storage", onStorage);
       window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVisibility);
       clearInterval(pollInterval);
       clearTimeout(reconnectTimer);
     };
