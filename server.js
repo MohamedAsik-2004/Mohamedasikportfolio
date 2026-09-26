@@ -281,56 +281,10 @@ function initializeDatabase() {
     )`, (err) => {
       if (err) console.error('Error creating leads table:', err.message);
     });
-
-    // 3. Admin Users Table
-    db.run(`CREATE TABLE IF NOT EXISTS users (
-      username TEXT PRIMARY KEY,
-      password TEXT
-    )`, (err) => {
-      if (err) console.error('Error creating users table:', err.message);
-      else {
-        // Seed admin user credentials
-        db.get("SELECT username FROM users WHERE username = 'admin'", (err, row) => {
-          if (!row) {
-            db.run("INSERT INTO users (username, password) VALUES ('admin', 'asik2004')", (err) => {
-              if (err) console.error('Error seeding admin user:', err.message);
-              else console.log('Successfully seeded admin user.');
-            });
-          }
-        });
-      }
-    });
   });
 }
 
 // API Routes
-
-// Admin Authentication endpoint
-app.post('/api/login', (req, res) => {
-  const { username, password } = req.body;
-  if (!username || !password) {
-    return res.status(400).json({ error: 'Username and password are required' });
-  }
-
-  const envUsername = (process.env.ADMIN_USERNAME || 'admin').trim().toLowerCase();
-  const envPassword = process.env.ADMIN_PASSWORD || 'asik2004';
-  const allowedPasswords = [envPassword, 'asik2004', 'admin123', 'admin'];
-
-  if (username.trim().toLowerCase() === envUsername && allowedPasswords.includes(password.trim())) {
-    return res.json({ success: true, username: envUsername });
-  }
-
-  db.get("SELECT * FROM users WHERE username = ? AND password = ?", [username, password], (err, row) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    if (row) {
-      res.json({ success: true, username: row.username });
-    } else {
-      res.status(401).json({ error: 'Invalid admin username or password' });
-    }
-  });
-});
 
 // Settings Endpoints
 app.get('/api/portfolio-data', (req, res) => {
@@ -516,11 +470,6 @@ app.use(express.static(__dirname));
 // Serve CSS stylesheet explicitly
 app.get('/styles.css', (req, res) => {
   res.sendFile(path.join(process.cwd(), 'styles.css'));
-});
-
-// Serve standalone admin portal route
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(process.cwd(), 'admin.html'));
 });
 
 // Catch-all route to serve index.html

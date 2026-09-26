@@ -2,7 +2,7 @@
   "version": 2,
   "functions": {
     "api/index.js": {
-      "includeFiles": "{styles.css,index.html,admin.html,portfolio_data.json,database.sqlite}"
+      "includeFiles": "{styles.css,index.html,portfolio_data.json,database.sqlite}"
     }
   },
   "rewrites": [
