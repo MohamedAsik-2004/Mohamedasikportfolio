@@ -1068,7 +1068,7 @@ const SkillCard = ({ s }) => {
   }, [s.pct]);
   return (
     <div ref={ref} className="reveal skill-card">
-      <div className="skill-icon" style={{ background: s.bg, color: s.fg, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>{s.glyph}</div>
+      <div className="skill-icon" style={{ background: s.bg || "rgba(124, 92, 255, 0.1)", color: s.fg || "#a78bfa", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>{s.glyph || "⚡"}</div>
       <div className="skill-name">{s.name}</div>
       <div className="skill-sub">{s.sub}</div>
       <div className="skill-bar"><div className="skill-bar-fill" style={{ width: `${fill}%` }} /></div>
@@ -1078,6 +1078,22 @@ const SkillCard = ({ s }) => {
 
 const Skills = () => {
   const { data } = useContext(PortfolioContext);
+  const skillsData = data?.skills || {};
+
+  const categoryConfig = {
+    languages: { title: "Languages", sub: "Core Programming" },
+    mobile: { title: "Mobile Development", sub: "Cross-Platform & Native" },
+    web: { title: "Web Technologies", sub: "Frontend & Web Stack" },
+    frontend: { title: "Frontend Frameworks", sub: "Client-side" },
+    backend: { title: "Backend Architecture", sub: "Server-side & APIs" },
+    databaseCloud: { title: "Database & Cloud", sub: "Storage & Infrastructure" },
+    tools: { title: "Tools & Workflow", sub: "DevOps & Testing" }
+  };
+
+  const categoryKeys = Object.keys(skillsData).filter(
+    (key) => Array.isArray(skillsData[key]) && skillsData[key].length > 0
+  );
+
   return (
     <section id="skills">
       <div className="container">
@@ -1086,25 +1102,30 @@ const Skills = () => {
           <div className="section-heading">Technologies I Work With</div>
         </Reveal>
 
-        <div className="skill-group">
-          <Reveal className="skill-group-head">
-            <span className="dot" />
-            <div className="skill-group-title">Frontend<span>Client-side</span></div>
-          </Reveal>
-          <div className="skills-grid">
-            {(data.skills.frontend || []).map((s) => <SkillCard key={s.name} s={s} />)}
-          </div>
-        </div>
+        {categoryKeys.map((key) => {
+          const items = skillsData[key];
+          const config = categoryConfig[key] || {
+            title: key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1'),
+            sub: "Technical Proficiency"
+          };
 
-        <div className="skill-group">
-          <Reveal className="skill-group-head">
-            <span className="dot" />
-            <div className="skill-group-title">Backend<span>Server-side</span></div>
-          </Reveal>
-          <div className="skills-grid">
-            {(data.skills.backend || []).map((s) => <SkillCard key={s.name} s={s} />)}
-          </div>
-        </div>
+          return (
+            <div className="skill-group" key={key}>
+              <Reveal className="skill-group-head">
+                <span className="dot" />
+                <div className="skill-group-title">
+                  {config.title}
+                  <span>{config.sub}</span>
+                </div>
+              </Reveal>
+              <div className="skills-grid">
+                {items.map((s, idx) => (
+                  <SkillCard key={s.name + "-" + idx} s={s} />
+                ))}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </section>
   );
@@ -1810,7 +1831,7 @@ function App() {
           c.id === "HRD/REF/049/2026" || 
           c.id === "FSDIN2655" ||
           (c.issuer && (c.issuer.includes("InnoSAS") || c.issuer.includes("Novitech") || c.issuer.includes("EduBridge")))
-        ) || !(parsed.certificates || []).some(c => c.id === "IBM-BI-2026");
+        ) || !(parsed.certificates || []).some(c => c.id === "IBM-BI-2026") || !parsed.skills || !parsed.skills.languages;
 
         if (isOldCache) {
           localStorage.removeItem("portfolio_data");
