@@ -781,6 +781,7 @@ const Nav = ({ theme, toggleTheme, active }) => {
 /* ---------------- Hero ---------------- */
 const HeroPortrait = ({ avatarUrl }) => {
   const [imgFailed, setImgFailed] = useState(false);
+  useEffect(() => { setImgFailed(false); }, [avatarUrl]);
   return (
     <div className="hero-portrait-wrapper">
       {!imgFailed && avatarUrl ? (
@@ -935,6 +936,7 @@ const Hero = ({ theme }) => {
 
 const AboutPortrait = ({ avatarUrl }) => {
   const [imgFailed, setImgFailed] = useState(false);
+  useEffect(() => { setImgFailed(false); }, [avatarUrl]);
   return (
     <div className="about-portrait-inner">
       {!imgFailed && avatarUrl ? (
