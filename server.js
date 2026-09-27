@@ -158,42 +158,63 @@ const DEFAULT_PORTFOLIO_DATA_FALLBACK = {
   },
   "certificates": [
     {
-      "issuer": "INNOSAS INFOTECH PVT LTD",
-      "title": "Internship in IT Infrastructure",
-      "date": "Jun 2026",
-      "id": "HRD/REF/049/2026",
-      "desc": "Completed a comprehensive 5-month hands-on industrial internship in IT Infrastructure and Systems at InnoSAS Infotech Pvt Ltd. Gained experience working with IT infrastructure, network setup, troubleshooting, and team collaboration.",
+      "issuer": "IBM",
+      "title": "IBM Business Intelligence",
+      "date": "2026",
+      "id": "IBM-BI-2026",
+      "desc": "Certification covering business intelligence fundamentals, data analysis, reporting, and enterprise decision-making tools.",
       "tags": [
-        "IT Infrastructure",
-        "Networking",
-        "System Administration",
-        "Troubleshooting"
+        "Business Intelligence",
+        "Data Analysis",
+        "Reporting"
       ]
     },
     {
-      "issuer": "EDUBRIDGE & NIRMAAN (INFOSYS FOUNDATION)",
-      "title": "Certification Program in Artificial Intelligence",
-      "date": "Jun 2025",
-      "id": "EBEON05251093557",
-      "desc": "Successfully completed the intensive Certification Program in Artificial Intelligence with an outstanding score of 96% (Grade A+). Covered fundamental concepts of AI, Machine Learning algorithms, Python programming for AI, and real-world project implementations.",
+      "issuer": "Infosys",
+      "title": "Infosys Artificial Intelligence",
+      "date": "2025",
+      "id": "INF-AI-2025",
+      "desc": "Certification program in Artificial Intelligence covering AI concepts, Machine Learning algorithms, and practical Python implementations.",
       "tags": [
         "Artificial Intelligence",
         "Machine Learning",
-        "Python",
-        "Data Science"
+        "Python"
       ]
     },
     {
-      "issuer": "NOVITECH R&D PRIVATE LIMITED",
-      "title": "Internship in Full Stack Development",
-      "date": "Feb 2025",
-      "id": "FSDIN2655",
-      "desc": "Completed a comprehensive 1-month hands-on industrial internship in Full Stack Development. Gained practical experience in architecting, developing, and deploying end-to-end web applications, focusing on scalable backend APIs, database design, and responsive, interactive frontend interfaces.",
+      "issuer": "Cisco",
+      "title": "Cisco Data Science",
+      "date": "2025",
+      "id": "CISCO-DS-2025",
+      "desc": "Certified training on data science principles, data visualization, statistical analysis, and predictive modeling.",
       "tags": [
-        "PHP",
-        "MySQL",
-        "JavaScript",
-        "HTML5"
+        "Data Science",
+        "Python",
+        "Analytics"
+      ]
+    },
+    {
+      "issuer": "IIT Bombay - Spoken Tutorial",
+      "title": "Python (Spoken Tutorial)",
+      "date": "2025",
+      "id": "IITB-PY-2025",
+      "desc": "Hands-on certification in Python programming covering data structures, object-oriented concepts, and application scripting.",
+      "tags": [
+        "Python",
+        "Programming",
+        "OOP"
+      ]
+    },
+    {
+      "issuer": "Google Cloud",
+      "title": "Google Cloud Generative AI Studio",
+      "date": "2026",
+      "id": "GC-GENAI-2026",
+      "desc": "Specialized certification on building and deploying generative AI models, LLM prompts, and cloud AI applications.",
+      "tags": [
+        "Generative AI",
+        "Google Cloud",
+        "LLM"
       ]
     }
   ],

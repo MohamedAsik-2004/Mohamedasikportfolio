@@ -1804,7 +1804,7 @@ function App() {
   const [portfolioData, setPortfolioData] = useState(() => {
     try {
       const cached = localStorage.getItem("portfolio_data");
-      if (cached) return JSON.parse(cached);
+      if (cached && !cached.includes("HRD/REF/049/2026") && !cached.includes("FSDIN2655")) return JSON.parse(cached);
     } catch(e) {}
     return DEFAULT_PORTFOLIO_DATA;
   });
@@ -1823,7 +1823,10 @@ function App() {
 
     const fetchPortfolioData = async () => {
       try {
-        const res = await fetch(`${API_BASE}/api/portfolio-data?t=${Date.now()}`);
+        let res = await fetch(`${API_BASE}/api/portfolio-data?t=${Date.now()}`);
+        if (!res.ok) {
+          res = await fetch(`./portfolio_data.json?t=${Date.now()}`);
+        }
         if (res.ok) {
           const data = await res.json();
           const newStr = JSON.stringify(data);
@@ -1836,7 +1839,20 @@ function App() {
           }
         }
       } catch(err) {
-        console.error("Error loading portfolio data:", err);
+        try {
+          const res = await fetch(`./portfolio_data.json?t=${Date.now()}`);
+          if (res.ok) {
+            const data = await res.json();
+            const newStr = JSON.stringify(data);
+            const currentStr = localStorage.getItem("portfolio_data");
+            if (currentStr !== newStr) {
+              setPortfolioData(data);
+              try {
+                localStorage.setItem("portfolio_data", newStr);
+              } catch(e) {}
+            }
+          }
+        } catch(e) {}
       }
     };
 
