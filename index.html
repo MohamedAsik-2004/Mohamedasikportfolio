@@ -1804,7 +1804,20 @@ function App() {
   const [portfolioData, setPortfolioData] = useState(() => {
     try {
       const cached = localStorage.getItem("portfolio_data");
-      if (cached && !cached.includes("HRD/REF/049/2026") && !cached.includes("FSDIN2655")) return JSON.parse(cached);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        const isOldCache = (parsed.certificates || []).some(c => 
+          c.id === "HRD/REF/049/2026" || 
+          c.id === "FSDIN2655" ||
+          (c.issuer && (c.issuer.includes("InnoSAS") || c.issuer.includes("Novitech") || c.issuer.includes("EduBridge")))
+        ) || !(parsed.certificates || []).some(c => c.id === "IBM-BI-2026");
+
+        if (isOldCache) {
+          localStorage.removeItem("portfolio_data");
+          return DEFAULT_PORTFOLIO_DATA;
+        }
+        return parsed;
+      }
     } catch(e) {}
     return DEFAULT_PORTFOLIO_DATA;
   });
