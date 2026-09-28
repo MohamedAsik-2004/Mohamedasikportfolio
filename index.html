@@ -517,7 +517,7 @@ const DEFAULT_PORTFOLIO_DATA = {
       "title": "Moobigo – Online Food Delivery App",
       "category": "Mobile App",
       "tech": "Flutter, Dart",
-      "type": "food",
+      "type": "ecommerce",
       "desc": "Developed a Flutter e-commerce app featuring product discovery, categories, deals, secure payments, and a responsive shopping experience."
     },
     {
@@ -1468,77 +1468,60 @@ const AIMock = () => (
       <div className="mock-dot reddot" />
       <div className="mock-dot yellowdot" />
       <div className="mock-dot greendot" />
-      <span style={{ fontSize: '9.5px', color: 'rgba(255,255,255,0.45)', marginLeft: '8px', fontFamily: 'monospace' }}>ai_recommendation_engine.py</span>
     </div>
-    <div className="mock-body" style={{ background: 'linear-gradient(135deg, #090d16 0%, #111827 100%)', padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: '8px', height: '100%', boxSizing: 'border-box' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '6px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ fontSize: '13px' }}>🤖</span>
-          <span style={{ fontSize: '11px', fontWeight: '700', color: '#60a5fa' }}>AI Match Engine</span>
+    <div className="mock-body">
+      <div className="ai-body">
+        <div className="ai-top-bar">
+          <span className="ai-status-pill">🤖 AI Recommendation Engine</span>
+          <span className="ai-score-badge">98% Match</span>
         </div>
-        <span style={{ fontSize: '9px', background: 'rgba(16, 185, 129, 0.2)', color: '#34d399', padding: '2px 7px', borderRadius: '10px', fontWeight: '700' }}>98.4% Match</span>
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '8px', flex: 1, alignItems: 'center' }}>
-        <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', padding: '8px' }}>
-          <div style={{ fontSize: '9px', color: '#9ca3af', marginBottom: '3px' }}>Candidate Skills Profile</div>
-          <div style={{ fontSize: '11px', fontWeight: '700', color: '#fff' }}>Mohamed Asik</div>
-          <div style={{ fontSize: '8.5px', color: '#818cf8', marginTop: '2px' }}>AI, ML & Python Stack</div>
-          <div style={{ display: 'flex', gap: '4px', marginTop: '6px' }}>
-            <span style={{ fontSize: '8px', background: 'rgba(99,102,241,0.25)', color: '#a5b4fc', padding: '2px 5px', borderRadius: '4px', fontWeight: '600' }}>Python</span>
-            <span style={{ fontSize: '8px', background: 'rgba(59,130,246,0.25)', color: '#93c5fd', padding: '2px 5px', borderRadius: '4px', fontWeight: '600' }}>PyTorch</span>
+        <div className="ai-hero-card">
+          <div className="ai-icon">⚡</div>
+          <div className="ai-info">
+            <span className="ai-title">Software Engineer Intern</span>
+            <span className="ai-sub">Recommended based on Python & ML skills</span>
           </div>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-          <div style={{ background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.25)', padding: '5px 7px', borderRadius: '6px' }}>
-            <div style={{ fontSize: '7.5px', color: '#6ee7b7', textTransform: 'uppercase', fontWeight: '700' }}>Top Recommended Role</div>
-            <div style={{ fontSize: '9.5px', fontWeight: '700', color: '#fff', marginTop: '1px' }}>AI Engineer Intern</div>
-          </div>
-          <div style={{ background: 'rgba(99, 102, 241, 0.12)', border: '1px solid rgba(99, 102, 241, 0.25)', padding: '5px 7px', borderRadius: '6px' }}>
-            <div style={{ fontSize: '7.5px', color: '#a5b4fc', textTransform: 'uppercase', fontWeight: '700' }}>Secondary Match</div>
-            <div style={{ fontSize: '9.5px', fontWeight: '700', color: '#fff', marginTop: '1px' }}>Data Science Intern</div>
-          </div>
+        <div className="ai-tags-row">
+          <span className="ai-tag">Python</span>
+          <span className="ai-tag">Machine Learning</span>
+          <span className="ai-tag">Scikit-Learn</span>
+          <span className="ai-tag">FastAPI</span>
         </div>
       </div>
     </div>
   </div>
 );
 
-const MobilePosMock = () => (
+const PosMock = () => (
   <div className="mock-window">
     <div className="mock-topbar">
       <div className="mock-dot reddot" />
       <div className="mock-dot yellowdot" />
       <div className="mock-dot greendot" />
-      <span style={{ fontSize: '9.5px', color: 'rgba(255,255,255,0.45)', marginLeft: '8px', fontFamily: 'monospace' }}>Mobile_POS_Terminal.flutter</span>
     </div>
-    <div className="mock-body" style={{ background: '#090d16', padding: '8px 10px', display: 'flex', flexDirection: 'column', gap: '6px', height: '100%', boxSizing: 'border-box' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.04)', padding: '4px 8px', borderRadius: '6px' }}>
-        <span style={{ fontSize: '10px', fontWeight: '700', color: '#10b981', display: 'flex', alignItems: 'center', gap: '4px' }}>
-          📱 Mobile POS Terminal
-        </span>
-        <span style={{ fontSize: '8px', background: '#10b981', color: '#000', padding: '1px 6px', borderRadius: '4px', fontWeight: '800' }}>OFFLINE READY</span>
-      </div>
-      <div style={{ background: 'rgba(16, 185, 129, 0.08)', border: '1px dashed rgba(16, 185, 129, 0.3)', borderRadius: '6px', padding: '4px', textAlign: 'center' }}>
-        <span style={{ fontSize: '8px', color: '#6ee7b7', fontWeight: '600' }}>📷 Barcode Scanner Active • Ready to Scan</span>
-      </div>
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '3px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9px', color: '#d1d5db', background: 'rgba(255,255,255,0.03)', padding: '3px 6px', borderRadius: '4px' }}>
-          <span>Wireless Mouse (x1)</span>
-          <span style={{ fontWeight: '700', color: '#fff' }}>₹450.00</span>
+    <div className="mock-body">
+      <div className="pos-body">
+        <div className="pos-header">
+          <span className="pos-title">📱 Mobile POS Terminal</span>
+          <span className="pos-scanner">Barcode Scanner Active</span>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9px', color: '#d1d5db', background: 'rgba(255,255,255,0.03)', padding: '3px 6px', borderRadius: '4px' }}>
-          <span>USB-C Hub Multiport (x1)</span>
-          <span style={{ fontWeight: '700', color: '#fff' }}>₹1,200.00</span>
+        <div className="pos-items">
+          <div className="pos-row">
+            <span>Item #1042 - Grocery Pack</span>
+            <span>$45.00</span>
+          </div>
+          <div className="pos-row">
+            <span>Item #2089 - Beverage Can x2</span>
+            <span>$12.50</span>
+          </div>
         </div>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '4px' }}>
-        <div>
-          <div style={{ fontSize: '7.5px', color: '#9ca3af' }}>NET AMOUNT (GST INC.)</div>
-          <div style={{ fontSize: '12px', fontWeight: '800', color: '#10b981' }}>₹1,650.00</div>
-        </div>
-        <div style={{ display: 'flex', gap: '4px' }}>
-          <span style={{ fontSize: '8px', background: '#2563eb', color: '#fff', padding: '3px 7px', borderRadius: '4px', fontWeight: '700' }}>UPI QR</span>
-          <span style={{ fontSize: '8px', background: '#059669', color: '#fff', padding: '3px 7px', borderRadius: '4px', fontWeight: '700' }}>Print Receipt</span>
+        <div className="pos-footer">
+          <div>
+            <span style={{ fontSize: '8px', color: 'rgba(255,255,255,0.5)', display: 'block' }}>Total Bill</span>
+            <span className="pos-total">$57.50</span>
+          </div>
+          <span className="pos-btn">Print Thermal Receipt</span>
         </div>
       </div>
     </div>
@@ -1551,81 +1534,26 @@ const HotelPosMock = () => (
       <div className="mock-dot reddot" />
       <div className="mock-dot yellowdot" />
       <div className="mock-dot greendot" />
-      <span style={{ fontSize: '9.5px', color: 'rgba(255,255,255,0.45)', marginLeft: '8px', fontFamily: 'monospace' }}>Hotel_Billing_KOT.dart</span>
     </div>
-    <div className="mock-body" style={{ background: '#0c0f18', padding: '8px 10px', display: 'flex', flexDirection: 'column', gap: '6px', height: '100%', boxSizing: 'border-box' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ fontSize: '10px', fontWeight: '700', color: '#f59e0b', display: 'flex', alignItems: 'center', gap: '4px' }}>
-          🏨 Hotel & Restaurant Billing
-        </span>
-        <span style={{ fontSize: '8px', background: 'rgba(245, 158, 11, 0.2)', color: '#fbbf24', padding: '2px 6px', borderRadius: '4px', fontWeight: '600' }}>KOT Dispatcher</span>
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '4px' }}>
-        <div style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '6px', padding: '4px', textAlign: 'center' }}>
-          <div style={{ fontSize: '8.5px', color: '#fca5a5', fontWeight: '700' }}>Table 01</div>
-          <div style={{ fontSize: '7px', color: '#ef4444', fontWeight: '600' }}>Occupied</div>
+    <div className="mock-body">
+      <div className="hotel-body">
+        <div className="hotel-header">
+          <span className="hotel-table">🏨 Table #08 (Active Order)</span>
+          <span className="hotel-kot">KOT Sent to Kitchen</span>
         </div>
-        <div style={{ background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '6px', padding: '4px', textAlign: 'center' }}>
-          <div style={{ fontSize: '8.5px', color: '#6ee7b7', fontWeight: '700' }}>Table 02</div>
-          <div style={{ fontSize: '7px', color: '#10b981', fontWeight: '600' }}>Vacant</div>
-        </div>
-        <div style={{ background: 'rgba(245, 158, 11, 0.15)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: '6px', padding: '4px', textAlign: 'center' }}>
-          <div style={{ fontSize: '8.5px', color: '#fde047', fontWeight: '700' }}>Table 03</div>
-          <div style={{ fontSize: '7px', color: '#f59e0b', fontWeight: '600' }}>Billing</div>
-        </div>
-      </div>
-      <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '6px', padding: '5px 8px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-        <div style={{ fontSize: '7.5px', color: '#9ca3af', display: 'flex', justifyContent: 'space-between', marginBottom: '3px' }}>
-          <span>CURRENT BILL: TABLE 01</span>
-          <span style={{ color: '#fbbf24', fontWeight: '700' }}>KOT #402</span>
-        </div>
-        <div style={{ fontSize: '8.5px', color: '#fff', display: 'flex', justifyContent: 'space-between' }}>
-          <span>2x Butter Chicken & Naan</span>
-          <span style={{ fontWeight: '700' }}>₹480</span>
-        </div>
-        <div style={{ fontSize: '8.5px', color: '#fff', display: 'flex', justifyContent: 'space-between', marginTop: '2px' }}>
-          <span>2x Mango Lassi</span>
-          <span style={{ fontWeight: '700' }}>₹120</span>
-        </div>
-      </div>
-    </div>
-  </div>
-);
-
-const FoodDeliveryMock = () => (
-  <div className="mock-window">
-    <div className="mock-topbar">
-      <div className="mock-dot reddot" />
-      <div className="mock-dot yellowdot" />
-      <div className="mock-dot greendot" />
-      <span style={{ fontSize: '9.5px', color: 'rgba(255,255,255,0.45)', marginLeft: '8px', fontFamily: 'monospace' }}>Moobigo_Food_Express.app</span>
-    </div>
-    <div className="mock-body" style={{ background: '#111420', padding: '8px 10px', display: 'flex', flexDirection: 'column', gap: '6px', height: '100%', boxSizing: 'border-box' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <span style={{ fontSize: '13px' }}>🛵</span>
-          <span style={{ fontSize: '11px', fontWeight: '800', color: '#ff4757' }}>Moobigo Food</span>
-        </div>
-        <span style={{ fontSize: '8px', background: 'rgba(255,71,87,0.2)', color: '#ff6b81', padding: '2px 6px', borderRadius: '10px', fontWeight: '700' }}>⚡ 18 MINS</span>
-      </div>
-      <div style={{ background: 'linear-gradient(90deg, #ff4757 0%, #ff6b81 100%)', borderRadius: '6px', padding: '5px 8px', color: '#fff' }}>
-        <div style={{ fontSize: '9.5px', fontWeight: '800' }}>50% OFF ON FIRST ORDER</div>
-        <div style={{ fontSize: '7px', opacity: 0.9 }}>Use code: MOOBIGO50 • Free Delivery</div>
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', flex: 1 }}>
-        <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '6px', padding: '5px 7px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <div>
-            <div style={{ fontSize: '14px' }}>🍔</div>
-            <div style={{ fontSize: '8.5px', fontWeight: '700', color: '#fff' }}>Zesty Burger</div>
+        <div className="hotel-orders">
+          <div className="hotel-row">
+            <span>Butter Chicken & Naan</span>
+            <span>$28.00</span>
           </div>
-          <div style={{ fontSize: '9px', fontWeight: '800', color: '#ff4757' }}>₹149</div>
-        </div>
-        <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '6px', padding: '5px 7px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <div>
-            <div style={{ fontSize: '14px' }}>🍕</div>
-            <div style={{ fontSize: '8.5px', fontWeight: '700', color: '#fff' }}>Italian Pizza</div>
+          <div className="hotel-row">
+            <span>Fresh Lime Soda x2</span>
+            <span>$8.00</span>
           </div>
-          <div style={{ fontSize: '9px', fontWeight: '800', color: '#ff4757' }}>₹299</div>
+        </div>
+        <div className="hotel-footer">
+          <span className="hotel-tax">Inc. GST & Taxes</span>
+          <span className="hotel-btn">Generate Invoice</span>
         </div>
       </div>
     </div>
@@ -1638,85 +1566,48 @@ const CrmMock = () => (
       <div className="mock-dot reddot" />
       <div className="mock-dot yellowdot" />
       <div className="mock-dot greendot" />
-      <span style={{ fontSize: '9.5px', color: 'rgba(255,255,255,0.45)', marginLeft: '8px', fontFamily: 'monospace' }}>Invosoft_CRM_Enterprise.app</span>
     </div>
-    <div className="mock-body" style={{ background: '#0a0d18', padding: '8px 10px', display: 'flex', flexDirection: 'column', gap: '6px', height: '100%', boxSizing: 'border-box' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ fontSize: '10.5px', fontWeight: '800', color: '#818cf8', display: 'flex', alignItems: 'center', gap: '4px' }}>
-          📊 Invosoft CRM Software
-        </span>
-        <span style={{ fontSize: '8px', background: 'rgba(99, 102, 241, 0.2)', color: '#a5b4fc', padding: '2px 6px', borderRadius: '4px', fontWeight: '600' }}>v4.2 Suite</span>
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '4px' }}>
-        <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', padding: '4px', borderRadius: '4px' }}>
-          <div style={{ fontSize: '7px', color: '#9ca3af' }}>ACTIVE LEADS</div>
-          <div style={{ fontSize: '10px', fontWeight: '800', color: '#fff' }}>248</div>
+    <div className="mock-body">
+      <div className="crm-body">
+        <div className="crm-header">
+          <span className="crm-brand">📊 Invosoft CRM</span>
+          <span className="crm-badge">Enterprise Dashboard</span>
         </div>
-        <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', padding: '4px', borderRadius: '4px' }}>
-          <div style={{ fontSize: '7px', color: '#9ca3af' }}>REVENUE</div>
-          <div style={{ fontSize: '10px', fontWeight: '800', color: '#34d399' }}>₹14.2L</div>
-        </div>
-        <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', padding: '4px', borderRadius: '4px' }}>
-          <div style={{ fontSize: '7px', color: '#9ca3af' }}>WIN RATE</div>
-          <div style={{ fontSize: '10px', fontWeight: '800', color: '#818cf8' }}>74%</div>
-        </div>
-      </div>
-      <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '6px', padding: '5px 8px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '3px' }}>
-        <div style={{ fontSize: '7.5px', color: '#9ca3af', marginBottom: '2px' }}>SALES PIPELINE METRICS</div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '7.5px' }}>
-          <span style={{ width: '45px', color: '#d1d5db' }}>Qualified</span>
-          <div style={{ flex: 1, background: 'rgba(255,255,255,0.1)', height: '5px', borderRadius: '3px', overflow: 'hidden' }}>
-            <div style={{ width: '85%', height: '100%', background: '#60a5fa' }} />
+        <div className="crm-stats">
+          <div className="crm-stat-box">
+            <span className="crm-lbl">Total Revenue</span>
+            <span className="crm-val">$128,450</span>
+          </div>
+          <div className="crm-stat-box">
+            <span className="crm-lbl">Active Deals</span>
+            <span className="crm-val">42 Deals</span>
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '7.5px' }}>
-          <span style={{ width: '45px', color: '#d1d5db' }}>Proposal</span>
-          <div style={{ flex: 1, background: 'rgba(255,255,255,0.1)', height: '5px', borderRadius: '3px', overflow: 'hidden' }}>
-            <div style={{ width: '60%', height: '100%', background: '#818cf8' }} />
-          </div>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '7.5px' }}>
-          <span style={{ width: '45px', color: '#d1d5db' }}>Won</span>
-          <div style={{ flex: 1, background: 'rgba(255,255,255,0.1)', height: '5px', borderRadius: '3px', overflow: 'hidden' }}>
-            <div style={{ width: '92%', height: '100%', background: '#34d399' }} />
-          </div>
+        <div className="crm-deal-row">
+          <span>Client: Apex Technologies</span>
+          <span className="crm-status won">Closed Won</span>
         </div>
       </div>
     </div>
   </div>
 );
 
-const renderMockup = (p) => {
-  const type = (p.type || '').toLowerCase();
-  const title = (p.title || '').toLowerCase();
-  const category = (p.category || '').toLowerCase();
-
-  if (type === 'ai' || title.includes('ai') || title.includes('internship')) {
-    return <AIMock />;
-  }
-  if (type === 'hotel_pos' || type === 'hotel' || title.includes('hotel')) {
-    return <HotelPosMock />;
-  }
-  if (type === 'pos' || title.includes('pos')) {
-    return <MobilePosMock />;
-  }
-  if (type === 'food' || title.includes('food') || title.includes('delivery') || title.includes('moobigo')) {
-    return <FoodDeliveryMock />;
-  }
-  if (type === 'crm' || title.includes('crm') || title.includes('software') || category.includes('software')) {
-    return <CrmMock />;
-  }
-  if (type === 'ecommerce' || title.includes('shopping') || title.includes('store') || title.includes('raro')) {
-    return <ECommerceMock />;
-  }
-  if (type === 'chat' || title.includes('chat') || title.includes('messaging')) {
-    return <ChatMock />;
-  }
-  if (type === 'chai' || title.includes('chai')) {
-    return <ChaiMock />;
-  }
-  return <CrmMock />;
-};
+const GenericProjectMock = ({ project }) => (
+  <div className="mock-window">
+    <div className="mock-topbar">
+      <div className="mock-dot reddot" />
+      <div className="mock-dot yellowdot" />
+      <div className="mock-dot greendot" />
+    </div>
+    <div className="mock-body">
+      <div className="generic-mock-body">
+        <div className="generic-icon">🚀</div>
+        <div className="generic-title">{project ? project.title : "Project Showcase"}</div>
+        <div className="generic-tech">{project ? project.tech : "Modern Tech Stack"}</div>
+      </div>
+    </div>
+  </div>
+);
 
 /* ---------------- Interactive Ambient Glow Cursor ---------------- */
 const CustomCursor = () => {
@@ -1790,15 +1681,6 @@ const ProjectModal = ({ project, onClose }) => {
             <span key={idx} className="project-modal-tech-pill">{t.trim()}</span>
           ))}
         </div>
-        {project.imageUrl ? (
-          <div style={{ width: '100%', height: '210px', borderRadius: '14px', overflow: 'hidden', margin: '14px 0', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <img src={project.imageUrl} alt={project.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          </div>
-        ) : (
-          <div style={{ width: '100%', margin: '14px 0' }}>
-            {renderMockup(project)}
-          </div>
-        )}
         <p className="project-modal-desc">
           {project.desc || `A high-performance ${project.category || 'web'} project built using ${project.tech || 'modern technologies'}. Designed with sleek glassmorphism aesthetic, seamless interactive state management, and optimized response times.`}
         </p>
@@ -1847,7 +1729,23 @@ const ProjectCard = ({ p, i, activeIdx, onClick, cardW, onOpenModal }) => {
         </div>
       ) : (
         <div className="project-card-mockup-wrapper">
-          {renderMockup(p)}
+          {p.type === 'ai' ? (
+            <AIMock />
+          ) : p.type === 'pos' ? (
+            <PosMock />
+          ) : p.type === 'hotel_pos' ? (
+            <HotelPosMock />
+          ) : p.type === 'crm' || p.type === 'CRM' ? (
+            <CrmMock />
+          ) : p.type === 'ecommerce' ? (
+            <ECommerceMock />
+          ) : p.type === 'chat' ? (
+            <ChatMock />
+          ) : p.type === 'chai' ? (
+            <ChaiMock />
+          ) : (
+            <GenericProjectMock project={p} />
+          )}
         </div>
       )}
 
@@ -2104,7 +2002,7 @@ function App() {
           c.id === "HRD/REF/049/2026" || 
           c.id === "FSDIN2655" ||
           (c.issuer && (c.issuer.includes("InnoSAS") || c.issuer.includes("Novitech") || c.issuer.includes("EduBridge")))
-        ) || !(parsed.certificates || []).some(c => c.id === "IBM-BI-2026") || !parsed.skills || !parsed.skills.languages || !parsed.projects || parsed.projects.length < 5;
+        ) || !(parsed.certificates || []).some(c => c.id === "IBM-BI-2026") || !parsed.skills || !parsed.skills.languages || !(parsed.projects || []).some(p => p.num === "05");
 
         if (isOldCache) {
           localStorage.removeItem("portfolio_data");
