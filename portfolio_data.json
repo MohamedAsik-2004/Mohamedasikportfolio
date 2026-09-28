@@ -123,13 +123,7 @@
       "startDate": "2022",
       "endDate": "2026",
       "cgpa": "7.80 / 10",
-      "description": "Specialized in Information Technology, Software Engineering, Mobile Computing, and Database Systems.",
-      "coursework": [
-        "Mobile Application Development",
-        "Database Management Systems",
-        "Web Engineering",
-        "Data Structures & Algorithms"
-      ]
+      "description": "Specialized in Information Technology, Software Engineering, Mobile Computing, and Database Systems."
     }
   ],
   "experience": [
@@ -398,11 +392,27 @@
     },
     {
       "num": "03",
-      "title": "RARO – Online Shopping App",
+      "title": "Hotel POS",
+      "category": "Mobile App",
+      "tech": "Flutter, Dart, SQLite",
+      "type": "pos",
+      "desc": "Developed an offline billing and inventory app with barcode scanning, GST/discount calculation, Cash & UPI payments, PDF/CSV reports, and thermal receipt printing."
+    },
+    {
+      "num": "04",
+      "title": "Moobigo – Online Food Delivery App",
       "category": "Mobile App",
       "tech": "Flutter, Dart",
       "type": "ecommerce",
       "desc": "Developed a Flutter e-commerce app featuring product discovery, categories, deals, secure payments, and a responsive shopping experience."
+    },
+    {
+      "num": "05",
+      "title": "Invosoft CRM Software",
+      "category": "Software",
+      "tech": "Flutter, Dart, SQLite",
+      "type": "CRM",
+      "desc": "Developed an offline billing and inventory app with barcode scanning, GST/discount calculation, Cash & UPI payments, PDF/CSV reports, and thermal receipt printing."
     }
   ]
 }
