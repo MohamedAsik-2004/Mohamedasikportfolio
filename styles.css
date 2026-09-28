@@ -4457,12 +4457,12 @@ body.reduced-motion .reveal {
 }
 
 .resume-modal-body {
-  padding: 32px 40px;
+  padding: 20px 24px;
   overflow-y: auto;
   color: var(--text-body, #cbd5e1);
   background: var(--bg-main, #0b0f19);
   font-family: 'Inter', sans-serif;
-  line-height: 1.6;
+  line-height: 1.4;
 }
 
 .resume-modal-body ::-webkit-scrollbar {
@@ -4477,35 +4477,37 @@ body.reduced-motion .reveal {
 .resume-paper {
   background: #ffffff;
   color: #1e293b;
-  padding: 40px 48px;
-  border-radius: 8px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  padding: 28px 36px;
+  border-radius: 6px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
   font-family: 'Inter', sans-serif;
 }
 
 .resume-paper header {
   text-align: center;
-  border-bottom: 2px solid #0f172a;
-  padding-bottom: 16px;
-  margin-bottom: 24px;
+  border-bottom: 1.5px solid #0f172a;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .resume-paper header h1 {
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 800;
-  letter-spacing: 1.5px;
+  letter-spacing: 1px;
   color: #0f172a;
   text-transform: uppercase;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
+  line-height: 1.1;
 }
 
 .resume-paper header h2 {
   font-family: 'Lora', Georgia, serif;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
   font-style: italic;
   color: #334155;
-  margin-bottom: 12px;
+  margin-bottom: 6px;
+  line-height: 1.2;
 }
 
 .resume-paper .contact-info {
@@ -4513,15 +4515,15 @@ body.reduced-motion .reveal {
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 14px;
-  font-size: 13px;
+  gap: 12px;
+  font-size: 12px;
   color: #475569;
 }
 
 .resume-paper .contact-item {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
 }
 
 .resume-paper .contact-item a {
@@ -4535,41 +4537,46 @@ body.reduced-motion .reveal {
 }
 
 .resume-paper section {
-  margin-bottom: 22px;
+  margin-bottom: 10px;
 }
 
 .resume-paper .section-title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 800;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
   color: #0f172a;
   text-transform: uppercase;
   border-bottom: 1.5px solid #0f172a;
-  padding-bottom: 3px;
-  margin-bottom: 12px;
+  padding-bottom: 2px;
+  margin-bottom: 6px;
 }
 
 .resume-paper p.summary-text {
-  font-size: 13.5px;
+  font-size: 12.5px;
   color: #334155;
-  line-height: 1.6;
+  line-height: 1.4;
+  text-align: justify;
+}
+
+.resume-paper .job-item, .resume-paper .edu-item, .resume-paper .project-item {
+  margin-bottom: 6px;
 }
 
 .resume-paper .item-header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 }
 
 .resume-paper .item-title {
-  font-size: 15px;
+  font-size: 13.5px;
   font-weight: 700;
   color: #0f172a;
 }
 
 .resume-paper .item-date {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: #475569;
 }
@@ -4577,35 +4584,36 @@ body.reduced-motion .reveal {
 .resume-paper .item-sub {
   display: flex;
   justify-content: space-between;
-  font-size: 13.5px;
+  font-size: 12.5px;
   font-style: italic;
   color: #475569;
-  margin-bottom: 6px;
+  margin-bottom: 3px;
 }
 
 .resume-paper ul.bullet-list {
   list-style-type: disc;
-  padding-left: 18px;
-  font-size: 13.5px;
+  padding-left: 16px;
+  font-size: 12.5px;
   color: #334155;
 }
 
 .resume-paper ul.bullet-list li {
-  margin-bottom: 4px;
+  margin-bottom: 2px;
+  line-height: 1.35;
 }
 
 .resume-paper .skills-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px 30px;
-  font-size: 13.5px;
+  gap: 6px 20px;
+  font-size: 12.5px;
 }
 
 .resume-paper .skill-group strong {
   color: #0f172a;
   display: block;
   font-weight: 700;
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 }
 
 .resume-paper .skill-group span {
@@ -4615,14 +4623,14 @@ body.reduced-motion .reveal {
 .resume-paper .certs-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 8px 20px;
-  font-size: 13.5px;
+  gap: 4px 16px;
+  font-size: 12.5px;
 }
 
 .resume-paper .cert-item {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   color: #334155;
 }
 
@@ -4634,7 +4642,7 @@ body.reduced-motion .reveal {
 
 @media (max-width: 680px) {
   .resume-paper {
-    padding: 24px 18px;
+    padding: 16px 14px;
   }
   .resume-paper .skills-grid, .resume-paper .certs-grid {
     grid-template-columns: 1fr;
@@ -4643,7 +4651,7 @@ body.reduced-motion .reveal {
     max-height: 95vh;
   }
   .resume-modal-body {
-    padding: 16px;
+    padding: 12px;
   }
 }
 
