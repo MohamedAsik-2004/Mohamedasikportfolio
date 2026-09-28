@@ -395,7 +395,7 @@
       "title": "Hotel POS",
       "category": "Mobile App",
       "tech": "Flutter, Dart, SQLite",
-      "type": "pos",
+      "type": "hotel_pos",
       "desc": "Developed an offline billing and inventory app with barcode scanning, GST/discount calculation, Cash & UPI payments, PDF/CSV reports, and thermal receipt printing."
     },
     {
@@ -403,7 +403,7 @@
       "title": "Moobigo – Online Food Delivery App",
       "category": "Mobile App",
       "tech": "Flutter, Dart",
-      "type": "ecommerce",
+      "type": "food",
       "desc": "Developed a Flutter e-commerce app featuring product discovery, categories, deals, secure payments, and a responsive shopping experience."
     },
     {
@@ -411,7 +411,7 @@
       "title": "Invosoft CRM Software",
       "category": "Software",
       "tech": "Flutter, Dart, SQLite",
-      "type": "CRM",
+      "type": "crm",
       "desc": "Developed an offline billing and inventory app with barcode scanning, GST/discount calculation, Cash & UPI payments, PDF/CSV reports, and thermal receipt printing."
     }
   ]
