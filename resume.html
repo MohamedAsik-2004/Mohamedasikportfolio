@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mohamed Asik K - Resume</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #1e293b;
+      --heading: #0f172a;
+      --primary: #4f46e5;
+      --subtext: #475569;
+      --border: #e2e8f0;
+      --section-border: #0f172a;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body.dark-mode {
+        --bg: #0f172a;
+        --text: #e2e8f0;
+        --heading: #f8fafc;
+        --primary: #818cf8;
+        --subtext: #94a3b8;
+        --border: #334155;
+        --section-border: #64748b;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #f1f5f9;
+      color: var(--text);
+      line-height: 1.5;
+      padding: 40px 20px;
+    }
+
+    .action-bar {
+      max-width: 850px;
+      margin: 0 auto 20px auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .back-btn, .print-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background-color: #4f46e5;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+      transition: all 0.2s ease;
+    }
+
+    .back-btn {
+      background-color: #ffffff;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+      box-shadow: none;
+    }
+
+    .back-btn:hover {
+      background-color: #f8fafc;
+      border-color: #94a3b8;
+    }
+
+    .print-btn:hover {
+      background-color: #4338ca;
+      transform: translateY(-1px);
+    }
+
+    .resume-container {
+      max-width: 850px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 50px 60px;
+      border-radius: 4px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      color: #1e293b;
+    }
+
+    header {
+      text-align: center;
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+    }
+
+    header h1 {
+      font-family: 'Inter', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #0f172a;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    header h2 {
+      font-family: 'Lora', serif;
+      font-size: 18px;
+      font-weight: 500;
+      font-style: italic;
+      color: #334155;
+      margin-bottom: 12px;
+    }
+
+    .contact-info {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      font-size: 13px;
+      color: #475569;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .contact-item a {
+      color: #475569;
+      text-decoration: none;
+    }
+
+    .contact-item a:hover {
+      text-decoration: underline;
+    }
+
+    section {
+      margin-bottom: 22px;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #0f172a;
+      text-transform: uppercase;
+      border-bottom: 1.5px solid #0f172a;
+      padding-bottom: 4px;
+      margin-bottom: 12px;
+    }
+
+    p.summary-text {
+      font-size: 13.5px;
+      color: #334155;
+      line-height: 1.6;
+      text-align: justify;
+    }
+
+    .job-item, .edu-item, .project-item {
+      margin-bottom: 14px;
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 2px;
+    }
+
+    .item-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .item-date {
+      font-size: 13px;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    .item-sub {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13.5px;
+      font-style: italic;
+      color: #475569;
+      margin-bottom: 6px;
+    }
+
+    ul.bullet-list {
+      list-style-type: disc;
+      padding-left: 18px;
+      font-size: 13.5px;
+      color: #334155;
+    }
+
+    ul.bullet-list li {
+      margin-bottom: 4px;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px 30px;
+      font-size: 13.5px;
+    }
+
+    .skill-group strong {
+      color: #0f172a;
+      display: block;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .skill-group span {
+      color: #334155;
+    }
+
+    .certs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px 20px;
+      font-size: 13.5px;
+    }
+
+    .cert-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #334155;
+    }
+
+    .cert-item::before {
+      content: "•";
+      color: #0f172a;
+      font-weight: bold;
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+        padding: 0;
+      }
+      .action-bar {
+        display: none;
+      }
+      .resume-container {
+        box-shadow: none;
+        padding: 0;
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .resume-container {
+        padding: 30px 20px;
+      }
+      .skills-grid, .certs-grid {
+        grid-template-columns: 1fr;
+      }
+      .item-header {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="action-bar">
+    <a href="index.html" class="back-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      Back to Portfolio
+    </a>
+    <button onclick="window.print()" class="print-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Download PDF
+    </button>
+  </div>
+
+  <div class="resume-container">
+    <header>
+      <h1>MOHAMED ASIK K</h1>
+      <h2>Mobile Application Developer | Web Developer</h2>
+      <div class="contact-info">
+        <div class="contact-item">
+          ✉ <a href="mailto:mohamedasik.in2004@gmail.com">mohamedasik.in2004@gmail.com</a>
+        </div>
+        <div class="contact-item">
+          📞 <a href="tel:+916382555230">+91 6382555230</a>
+        </div>
+        <div class="contact-item">
+          📍 Thiruthuraipoondi, Thiruvarur Dt, Tamil Nadu
+        </div>
+        <div class="contact-item">
+          🔗 <a href="https://linkedin.com/in/mohamed-asik-k" target="_blank">Mohamed Asik K</a>
+        </div>
+      </div>
+    </header>
+
+    <section>
+      <div class="section-title">SUMMARY</div>
+      <p class="summary-text">
+        Aspiring Flutter and Full Stack Developer with hands-on experience in web and mobile application development. Skilled in Flutter, Dart, Java, Python, SQL, Android Studio, Git, and API integration. Passionate about building scalable, user-friendly applications and solving real-world problems through technology.
+      </p>
+    </section>
+
+    <section>
+      <div class="section-title">EXPERIENCE</div>
+      <div class="job-item">
+        <div class="item-header">
+          <div class="item-title">Full Stack Developer Intern</div>
+          <div class="item-date">01/2026 – 07/2026</div>
+        </div>
+        <div class="item-sub">
+          <span>Dezignora Creative Agency</span>
+          <span>Thiruthuraipoondi</span>
+        </div>
+        <ul class="bullet-list">
+          <li>Developed responsive web and mobile applications.</li>
+          <li>Integrated REST APIs and managed databases.</li>
+          <li>Collaborated with teams to deliver scalable software solutions.</li>
+          <li>Performed testing and debugging to improve performance.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">EDUCATION</div>
+      <div class="edu-item">
+        <div class="item-header">
+          <div class="item-title">B.Tech in Information Technology</div>
+          <div class="item-date">2022 – 2026</div>
+        </div>
+        <div class="item-sub">
+          <span>Mohamed Sathak AJ College of Engineering</span>
+          <span>Siruseri, Chennai</span>
+        </div>
+        <div style="font-size: 13.5px; color: #334155; font-weight: 500;">
+          CGPA: 7.80/10
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">TECHNICAL SKILLS</div>
+      <div class="skills-grid">
+        <div class="skill-group">
+          <strong>Languages</strong>
+          <span>Python, Dart</span>
+        </div>
+        <div class="skill-group">
+          <strong>Mobile</strong>
+          <span>Flutter, Android Studio, Cross-Platform Development</span>
+        </div>
+        <div class="skill-group">
+          <strong>Web</strong>
+          <span>HTML, CSS, JavaScript</span>
+        </div>
+        <div class="skill-group">
+          <strong>Database & Cloud</strong>
+          <span>SQL, AWS, Supabase, FireBase, Hive</span>
+        </div>
+        <div class="skill-group" style="grid-column: span 2;">
+          <strong>Tools</strong>
+          <span>Git, GitHub, REST APIs, Debugging, Testing</span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">CERTIFICATIONS</div>
+      <div class="certs-grid">
+        <div class="cert-item">IBM Business Intelligence</div>
+        <div class="cert-item">Python (Spoken Tutorial)</div>
+        <div class="cert-item">Infosys Artificial Intelligence</div>
+        <div class="cert-item">Google Cloud Generative AI Studio</div>
+        <div class="cert-item">Cisco Data Science</div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">PROJECTS</div>
+      <div class="project-item">
+        <div class="item-title">Internship Recommendation System</div>
+        <p style="font-size: 13.5px; color: #334155; margin-top: 2px;">
+          Built an AI-powered system to recommend internships based on skills and interests.
+        </p>
+      </div>
+
+      <div class="project-item">
+        <div class="item-title">Mobile POS</div>
+        <div style="font-size: 12.5px; font-style: italic; color: #475569; margin-bottom: 2px;">Flutter, Dart, SQLite</div>
+        <p style="font-size: 13.5px; color: #334155;">
+          Developed an offline billing and inventory app with barcode scanning, GST/discount calculation, Cash & UPI payments, PDF/CSV reports, and thermal receipt printing.
+        </p>
+      </div>
+
+      <div class="project-item">
+        <div class="item-title">RARO – Online Shopping App</div>
+        <div style="font-size: 12.5px; font-style: italic; color: #475569; margin-bottom: 2px;">Flutter, Dart</div>
+        <p style="font-size: 13.5px; color: #334155;">
+          Developed a Flutter e-commerce app featuring product discovery, categories, deals, secure payments, and a responsive shopping experience.
+        </p>
+      </div>
+    </section>
+
+  </div>
+
+</body>
+</html>

@@ -4373,4 +4373,278 @@ body.reduced-motion .reveal {
   opacity: 1 !important;
   transform: none !important;
 }
+
+/* ---------------- Resume Modal & Buttons ---------------- */
+.btn-resume-cta {
+  background: linear-gradient(135deg, rgba(124, 92, 255, 0.15), rgba(56, 189, 248, 0.15));
+  border: 1px solid rgba(124, 92, 255, 0.4) !important;
+  color: #a78bfa !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.btn-resume-cta:hover {
+  background: linear-gradient(135deg, #7c5cff, #38bdf8) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(124, 92, 255, 0.35);
+}
+
+.resume-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(6, 9, 18, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: modalFadeIn 0.25s ease-out forwards;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.resume-modal-card {
+  width: 100%;
+  max-width: 880px;
+  max-height: 90vh;
+  background: var(--bg-card, #121829);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalSlideUp {
+  from { transform: translateY(24px) scale(0.97); }
+  to { transform: translateY(0) scale(1); }
+}
+
+.resume-modal-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: rgba(18, 24, 41, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+}
+
+.resume-modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-heading, #f8fafc);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.resume-modal-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.resume-modal-body {
+  padding: 32px 40px;
+  overflow-y: auto;
+  color: var(--text-body, #cbd5e1);
+  background: var(--bg-main, #0b0f19);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+}
+
+.resume-modal-body ::-webkit-scrollbar {
+  width: 6px;
+}
+.resume-modal-body ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+/* Modal Paper styling matching document */
+.resume-paper {
+  background: #ffffff;
+  color: #1e293b;
+  padding: 40px 48px;
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  font-family: 'Inter', sans-serif;
+}
+
+.resume-paper header {
+  text-align: center;
+  border-bottom: 2px solid #0f172a;
+  padding-bottom: 16px;
+  margin-bottom: 24px;
+}
+
+.resume-paper header h1 {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #0f172a;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.resume-paper header h2 {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 16px;
+  font-weight: 500;
+  font-style: italic;
+  color: #334155;
+  margin-bottom: 12px;
+}
+
+.resume-paper .contact-info {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  font-size: 13px;
+  color: #475569;
+}
+
+.resume-paper .contact-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.resume-paper .contact-item a {
+  color: #475569;
+  text-decoration: none;
+}
+
+.resume-paper .contact-item a:hover {
+  text-decoration: underline;
+  color: #4f46e5;
+}
+
+.resume-paper section {
+  margin-bottom: 22px;
+}
+
+.resume-paper .section-title {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #0f172a;
+  text-transform: uppercase;
+  border-bottom: 1.5px solid #0f172a;
+  padding-bottom: 3px;
+  margin-bottom: 12px;
+}
+
+.resume-paper p.summary-text {
+  font-size: 13.5px;
+  color: #334155;
+  line-height: 1.6;
+}
+
+.resume-paper .item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 2px;
+}
+
+.resume-paper .item-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.resume-paper .item-date {
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.resume-paper .item-sub {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13.5px;
+  font-style: italic;
+  color: #475569;
+  margin-bottom: 6px;
+}
+
+.resume-paper ul.bullet-list {
+  list-style-type: disc;
+  padding-left: 18px;
+  font-size: 13.5px;
+  color: #334155;
+}
+
+.resume-paper ul.bullet-list li {
+  margin-bottom: 4px;
+}
+
+.resume-paper .skills-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 30px;
+  font-size: 13.5px;
+}
+
+.resume-paper .skill-group strong {
+  color: #0f172a;
+  display: block;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.resume-paper .skill-group span {
+  color: #334155;
+}
+
+.resume-paper .certs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px 20px;
+  font-size: 13.5px;
+}
+
+.resume-paper .cert-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #334155;
+}
+
+.resume-paper .cert-item::before {
+  content: "•";
+  color: #0f172a;
+  font-weight: bold;
+}
+
+@media (max-width: 680px) {
+  .resume-paper {
+    padding: 24px 18px;
+  }
+  .resume-paper .skills-grid, .resume-paper .certs-grid {
+    grid-template-columns: 1fr;
+  }
+  .resume-modal-card {
+    max-height: 95vh;
+  }
+  .resume-modal-body {
+    padding: 16px;
+  }
+}
+
 

@@ -126,7 +126,7 @@ const DEFAULT_PORTFOLIO_DATA = {
     "role": "Mobile Application Developer | Web Developer",
     "availability": "Open to Opportunities",
     "bio": "Aspiring Flutter and Full Stack Developer with hands-on experience in web and mobile application development.",
-    "resumeUrl": "#",
+    "resumeUrl": "resume.html",
     "avatarUrl": "asik_photo.png",
     "socials": {
       "github": "https://github.com/MohamedAsik-2004",
@@ -152,7 +152,7 @@ const DEFAULT_PORTFOLIO_DATA = {
       "REST APIs & Database Management",
       "Problem Solving & Testing"
     ],
-    "resumeUrl": "#",
+    "resumeUrl": "resume.html",
     "avatarUrl": "asik_photo.png"
   },
   "contact": {
@@ -575,7 +575,9 @@ const Icon = ({ name, size = 18 }) => {
     api: <g><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h10M7 13h6M7 17h4"/></g>,
     paperplane: <g><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></g>,
     mouse: <g><rect x="5" y="2" width="14" height="20" rx="7"/><circle cx="12" cy="7" r="1.5"/></g>,
-    briefcase: <g><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></g>
+    briefcase: <g><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></g>,
+    document: <g><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></g>,
+    printer: <g><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></g>
   };
   return <svg {...common}>{paths[name]}</svg>;
 };
@@ -767,10 +769,168 @@ const SplashScreen = () => {
   );
 };
 
+/* ---------------- Resume Modal ---------------- */
+const ResumeModal = ({ isOpen, onClose }) => {
+  if (!isOpen) return null;
+
+  const handlePrint = () => {
+    window.open("resume.html", "_blank");
+  };
+
+  return (
+    <div className="resume-modal-overlay" onClick={onClose}>
+      <div className="resume-modal-card" onClick={(e) => e.stopPropagation()}>
+        <div className="resume-modal-topbar">
+          <div className="resume-modal-title">
+            <Icon name="document" size={18} /> Mohamed Asik K — Resume
+          </div>
+          <div className="resume-modal-controls">
+            <button className="btn btn-primary btn-sm" onClick={handlePrint} style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+              <Icon name="printer" size={14} /> Open Printable / PDF
+            </button>
+            <button className="btn btn-outline btn-sm" onClick={onClose} aria-label="Close" style={{ padding: "6px 10px" }}>
+              <Icon name="close" size={16} />
+            </button>
+          </div>
+        </div>
+        <div className="resume-modal-body">
+          <div className="resume-paper">
+            <header>
+              <h1>MOHAMED ASIK K</h1>
+              <h2>Mobile Application Developer | Web Developer</h2>
+              <div className="contact-info">
+                <div className="contact-item">
+                  ✉ <a href="mailto:mohamedasik.in2004@gmail.com">mohamedasik.in2004@gmail.com</a>
+                </div>
+                <div className="contact-item">
+                  📞 <a href="tel:+916382555230">+91 6382555230</a>
+                </div>
+                <div className="contact-item">
+                  📍 Thiruthuraipoondi, Thiruvarur Dt, Tamil Nadu
+                </div>
+                <div className="contact-item">
+                  🔗 <a href="https://linkedin.com/in/mohamed-asik-k" target="_blank" rel="noopener noreferrer">Mohamed Asik K</a>
+                </div>
+              </div>
+            </header>
+
+            <section>
+              <div className="section-title">SUMMARY</div>
+              <p className="summary-text">
+                Aspiring Flutter and Full Stack Developer with hands-on experience in web and mobile application development. Skilled in Flutter, Dart, Java, Python, SQL, Android Studio, Git, and API integration. Passionate about building scalable, user-friendly applications and solving real-world problems through technology.
+              </p>
+            </section>
+
+            <section>
+              <div className="section-title">EXPERIENCE</div>
+              <div className="job-item">
+                <div className="item-header">
+                  <div className="item-title">Full Stack Developer Intern</div>
+                  <div className="item-date">01/2026 – 07/2026</div>
+                </div>
+                <div className="item-sub">
+                  <span>Dezignora Creative Agency</span>
+                  <span>Thiruthuraipoondi</span>
+                </div>
+                <ul className="bullet-list">
+                  <li>Developed responsive web and mobile applications.</li>
+                  <li>Integrated REST APIs and managed databases.</li>
+                  <li>Collaborated with teams to deliver scalable software solutions.</li>
+                  <li>Performed testing and debugging to improve performance.</li>
+                </ul>
+              </div>
+            </section>
+
+            <section>
+              <div className="section-title">EDUCATION</div>
+              <div className="edu-item">
+                <div className="item-header">
+                  <div className="item-title">B.Tech in Information Technology</div>
+                  <div className="item-date">2022 – 2026</div>
+                </div>
+                <div className="item-sub">
+                  <span>Mohamed Sathak AJ College of Engineering</span>
+                  <span>Siruseri, Chennai</span>
+                </div>
+                <div style={{ fontSize: "13.5px", color: "#334155", fontWeight: 500 }}>
+                  CGPA: 7.80/10
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <div className="section-title">TECHNICAL SKILLS</div>
+              <div className="skills-grid">
+                <div className="skill-group">
+                  <strong>Languages</strong>
+                  <span>Python, Dart</span>
+                </div>
+                <div className="skill-group">
+                  <strong>Mobile</strong>
+                  <span>Flutter, Android Studio, Cross-Platform Development</span>
+                </div>
+                <div className="skill-group">
+                  <strong>Web</strong>
+                  <span>HTML, CSS, JavaScript</span>
+                </div>
+                <div className="skill-group">
+                  <strong>Database & Cloud</strong>
+                  <span>SQL, AWS, Supabase, FireBase, Hive</span>
+                </div>
+                <div className="skill-group" style={{ gridColumn: "span 2" }}>
+                  <strong>Tools</strong>
+                  <span>Git, GitHub, REST APIs, Debugging, Testing</span>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <div className="section-title">CERTIFICATIONS</div>
+              <div className="certs-grid">
+                <div className="cert-item">IBM Business Intelligence</div>
+                <div className="cert-item">Python (Spoken Tutorial)</div>
+                <div className="cert-item">Infosys Artificial Intelligence</div>
+                <div className="cert-item">Google Cloud Generative AI Studio</div>
+                <div className="cert-item">Cisco Data Science</div>
+              </div>
+            </section>
+
+            <section>
+              <div className="section-title">PROJECTS</div>
+              <div className="project-item" style={{ marginBottom: "12px" }}>
+                <div className="item-title">Internship Recommendation System</div>
+                <p style={{ fontSize: "13.5px", color: "#334155", marginTop: "2px" }}>
+                  Built an AI-powered system to recommend internships based on skills and interests.
+                </p>
+              </div>
+
+              <div className="project-item" style={{ marginBottom: "12px" }}>
+                <div className="item-title">Mobile POS</div>
+                <div style={{ fontSize: "12.5px", fontStyle: "italic", color: "#475569", marginBottom: "2px" }}>Flutter, Dart, SQLite</div>
+                <p style={{ fontSize: "13.5px", color: "#334155" }}>
+                  Developed an offline billing and inventory app with barcode scanning, GST/discount calculation, Cash & UPI payments, PDF/CSV reports, and thermal receipt printing.
+                </p>
+              </div>
+
+              <div className="project-item">
+                <div className="item-title">RARO – Online Shopping App</div>
+                <div style={{ fontSize: "12.5px", fontStyle: "italic", color: "#475569", marginBottom: "2px" }}>Flutter, Dart</div>
+                <p style={{ fontSize: "13.5px", color: "#334155" }}>
+                  Developed a Flutter e-commerce app featuring product discovery, categories, deals, secure payments, and a responsive shopping experience.
+                </p>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 /* ---------------- Nav ---------------- */
 const NAV_ITEMS = ["Home", "About", "Skills", "Experience", "Certificates", "Projects", "Contact"];
 
-const Nav = ({ theme, toggleTheme, active }) => {
+const Nav = ({ theme, toggleTheme, active, onOpenResume }) => {
   const [open, setOpen] = useState(false);
   return (
     <div className="nav">
@@ -782,6 +942,9 @@ const Nav = ({ theme, toggleTheme, active }) => {
           ))}
         </ul>
         <div className="nav-right">
+          <button type="button" className="btn btn-outline btn-sm btn-resume-cta" onClick={onOpenResume} style={{ padding: "6px 14px", fontSize: "12px", display: "inline-flex", alignItems: "center", gap: "5px" }}>
+            <Icon name="document" size={14} /> Resume
+          </button>
           <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
             <Icon name={theme === "dark" ? "sun" : "moon"} size={17} />
           </button>
@@ -794,6 +957,7 @@ const Nav = ({ theme, toggleTheme, active }) => {
         {NAV_ITEMS.map((n) => (
           <a key={n} href={`#${n.toLowerCase()}`} onClick={() => setOpen(false)}>{n}</a>
         ))}
+        <a href="#resume" onClick={(e) => { e.preventDefault(); setOpen(false); onOpenResume(); }}>📄 View Resume</a>
       </div>
     </div>
   );
@@ -820,7 +984,7 @@ const HeroPortrait = ({ avatarUrl }) => {
   );
 };
 
-const Hero = ({ theme }) => {
+const Hero = ({ theme, onOpenResume }) => {
   const { data } = useContext(PortfolioContext);
   const hero = data.hero || {};
   const heroRef = useRef(null);
@@ -878,17 +1042,9 @@ const Hero = ({ theme }) => {
             <a href="#projects" className="btn btn-primary">
               <Icon name="briefcase" size={15} /> View My Work
             </a>
-            {(hero.resumeUrl || (data.about && data.about.resumeUrl)) && (hero.resumeUrl || data.about.resumeUrl) !== "#" && (
-              <a
-                href={hero.resumeUrl || data.about.resumeUrl}
-                download="Mohamed_Asik_Resume.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-outline"
-              >
-                <Icon name="download" size={15} /> Download Resume
-              </a>
-            )}
+            <button type="button" onClick={onOpenResume} className="btn btn-resume-cta">
+              <Icon name="document" size={15} /> View Resume
+            </button>
             <a href="#contact" className="btn btn-outline">
               <Icon name="paperplane" size={15} /> Contact Me
             </a>
@@ -2007,7 +2163,7 @@ function App() {
           c.id === "HRD/REF/049/2026" || 
           c.id === "FSDIN2655" ||
           (c.issuer && (c.issuer.includes("InnoSAS") || c.issuer.includes("Novitech") || c.issuer.includes("EduBridge")))
-        ) || !(parsed.certificates || []).some(c => c.id === "IBM-BI-2026") || !parsed.skills || !parsed.skills.languages || !(parsed.projects || []).some(p => p.num === "05") || !(parsed.projects || []).some(p => p.imageUrl);
+        ) || !(parsed.certificates || []).some(c => c.id === "IBM-BI-2026") || !parsed.skills || !parsed.skills.languages || !(parsed.projects || []).some(p => p.num === "05") || !(parsed.projects || []).some(p => p.imageUrl) || (parsed.hero && parsed.hero.resumeUrl === "#");
 
         if (isOldCache) {
           localStorage.removeItem("portfolio_data");
@@ -2020,6 +2176,7 @@ function App() {
   });
   const [theme, setTheme] = useState("dark");
   const [active, setActive] = useState("home");
+  const [showResumeModal, setShowResumeModal] = useState(false);
   const [toast, setToast] = useState({ show: false, msg: "" });
 
   useEffect(() => {
@@ -2213,14 +2370,15 @@ function App() {
     <PortfolioContext.Provider value={{ data: portfolioData, setData: setPortfolioData }}>
       <SplashScreen />
       <CustomCursor />
-      <Nav theme={theme} toggleTheme={toggleTheme} active={active} />
-      <Hero theme={theme} />
+      <Nav theme={theme} toggleTheme={toggleTheme} active={active} onOpenResume={() => setShowResumeModal(true)} />
+      <Hero theme={theme} onOpenResume={() => setShowResumeModal(true)} />
       <About />
       <Skills />
       <Timeline />
       <Certificates />
       <Projects />
       <Contact showToast={showToast} />
+      <ResumeModal isOpen={showResumeModal} onClose={() => setShowResumeModal(false)} />
       <footer>
         © 2026 {portfolioData.about ? portfolioData.about.name : "Mohamed Asik"}. All rights reserved.
       </footer>
