@@ -380,6 +380,7 @@
       "category": "AI Project",
       "tech": "AI, Python, Machine Learning",
       "type": "ai",
+      "imageUrl": "./project_ai_recommendation.png",
       "desc": "Built an AI-powered system to recommend internships based on skills and interests."
     },
     {
@@ -388,6 +389,7 @@
       "category": "Mobile App",
       "tech": "Flutter, Dart, SQLite",
       "type": "pos",
+      "imageUrl": "./project_mobile_pos.png",
       "desc": "Developed an offline billing and inventory app with barcode scanning, GST/discount calculation, Cash & UPI payments, PDF/CSV reports, and thermal receipt printing."
     },
     {
@@ -396,6 +398,7 @@
       "category": "Mobile App",
       "tech": "Flutter, Dart, SQLite",
       "type": "hotel_pos",
+      "imageUrl": "./project_hotel_pos.png",
       "desc": "Developed an offline billing and inventory app with barcode scanning, GST/discount calculation, Cash & UPI payments, PDF/CSV reports, and thermal receipt printing."
     },
     {
@@ -404,6 +407,7 @@
       "category": "Mobile App",
       "tech": "Flutter, Dart",
       "type": "ecommerce",
+      "imageUrl": "./project_moobigo_food.png",
       "desc": "Developed a Flutter e-commerce app featuring product discovery, categories, deals, secure payments, and a responsive shopping experience."
     },
     {
@@ -412,6 +416,7 @@
       "category": "Software",
       "tech": "Flutter, Dart, SQLite",
       "type": "crm",
+      "imageUrl": "./project_invosoft_crm.png",
       "desc": "Developed an offline billing and inventory app with barcode scanning, GST/discount calculation, Cash & UPI payments, PDF/CSV reports, and thermal receipt printing."
     }
   ]
